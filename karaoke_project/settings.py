@@ -1,5 +1,5 @@
 """
-Django settings for karaoke_project - LOCAL + RENDER READY!
+Django settings for karaoke_project - LOCAL + RENDER PRODUCTION READY!
 """
 from pathlib import Path
 import os
@@ -23,11 +23,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',  # ✅ RENDER STATIC FILES
     'recorder',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ STATIC/MEDIA RENDER
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,12 +94,13 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ✅ STATIC FILES - RENDER PRODUCTION READY
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
+# ✅ MEDIA FILES - SONGS/IMAGES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -107,6 +110,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # LOGIN SETTINGS
 LOGIN_REDIRECT_URL = '/admin/'
 LOGOUT_REDIRECT_URL = '/'
+
+# SECURITY FOR PRODUCTION
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Create media directories (local only)
 if DEBUG:
