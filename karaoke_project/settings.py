@@ -1,5 +1,5 @@
 """
-Django settings for karaoke_project - LOCAL + RENDER PRODUCTION READY!
+Django settings for karaoke_project - LOCAL + RENDER READY!
 """
 from pathlib import Path
 import os
@@ -23,19 +23,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',  # ✅ RENDER STATIC FILES
     'recorder',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ STATIC/MEDIA RENDER
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'karaoke_project.urls'
@@ -94,13 +93,12 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ STATIC FILES - RENDER PRODUCTION READY
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ✅ MEDIA FILES - SONGS/IMAGES
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -111,13 +109,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/admin/'
 LOGOUT_REDIRECT_URL = '/'
 
-# SECURITY FOR PRODUCTION
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
 # Create media directories (local only)
 if DEBUG:
     os.makedirs(str(MEDIA_ROOT / 'songs'), exist_ok=True)
     os.makedirs(str(MEDIA_ROOT / 'lyrics_images'), exist_ok=True)
     os.makedirs(str(MEDIA_ROOT / 'logo'), exist_ok=True)
     os.makedirs(str(MEDIA_ROOT / 'recordings'), exist_ok=True)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
