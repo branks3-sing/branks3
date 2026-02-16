@@ -11,23 +11,81 @@
         .upload-form { background: #222; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
         .song-list { background: #222; padding: 20px; border-radius: 10px; }
         .song-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #333; }
-        .btn { background: linear-gradient(135deg, #ff0066, #ff66cc); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn:hover { opacity: 0.9; }
-        .btn.active { background: linear-gradient(135deg, #00ff88, #66ffcc); }
-        .share-btn.shared { background: linear-gradient(135deg, #00ff88, #66ffcc); }
+        .btn { 
+            background: #000; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #333; }
+        .btn.active { background: #222; }  /* Active tab – slightly lighter */
+        .share-btn.shared { background: #1a1a1a; } /* Shared state – dark gray */
+        .delete-btn { background: #000; }   /* Delete button also black */
+        .delete-btn:hover { background: #440000; } /* Optional: dark red on hover */
         .share-url { word-break: break-all; font-size: 12px; margin-top: 5px; }
         input[type="text"], input[type="file"] { 
             flex: 1; background: #333; color: white; border: 1px solid #555; 
             padding: 12px; border-radius: 5px; min-height: 50px; 
         }
         input[type="text"]::placeholder { color: #aaa; }
+
+        /* Three‑dots menu styles */
+        .menu-container {
+            position: relative;
+            display: inline-block;
+        }
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+        }
+        .menu-button:hover {
+            opacity: 0.7;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #333;
+            border-radius: 8px;
+            padding: 10px;
+            min-width: 180px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-menu .btn {
+            width: 100%;
+            margin: 5px 0;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .dropdown-menu .share-url {
+            color: #ccc;
+            background: #444;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>👑 Admin Dashboard - {{ username }}</h1>
-            <a href="/logout/" class="btn">🚪 Logout</a>
+            <h1>👑 {{ username }}</h1>
+            <a href="/logout/" class="btn"> Logout</a>
         </div>
 
         <div class="tabs">
@@ -37,11 +95,10 @@
 
         {% if page == 'upload' %}
         <div class="upload-form">
-            <h3>📤 Upload New Song</h3>
+            <h3> Upload New Song</h3>
             <form method="post" enctype="multipart/form-data" action="/upload_song/">
                 {% csrf_token %}
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <!-- ✅ SONG NAME FIELD ADDED -->
                     <input type="text" name="song_name" placeholder="🎵 Enter Song Title (e.g. 'Shape of You')" required>
                     <input type="file" name="original_file" accept=".mp3" required>
                     <input type="file" name="accompaniment_file" accept=".mp3" required>
@@ -56,28 +113,34 @@
         <div class="song-list">
             <h3>🎵 All Songs ({{ songs.count }})</h3>
             
-            <!-- ✅ PERFECT CSRF TOKEN FOR SHARE BUTTONS -->
+            <!-- CSRF token for JavaScript requests -->
             <div style="display: none;">
                 {% csrf_token %}
             </div>
             
             {% for song in songs %}
-            <div class="song-item">
+            <div class="song-item" id="song-{{ song.id }}">
                 <div>
                     <strong>{{ song.name }}</strong><br>
                     <small>Uploaded: {{ song.uploaded_by }} | {{ song.created_at|date:"M d, Y" }}</small>
                 </div>
-                <div style="text-align: right;">
-                    <a href="/karaoke/{{ song.id }}/" class="btn">▶️ Play</a>
-                    <button class="btn share-btn {% if song.is_shared %}shared{% endif %}" 
-                            onclick="toggleShare({{ song.id }}, this)">
-                        {% if song.is_shared %}✅ Shared{% else %}🔒 Private{% endif %}
-                    </button>
-                    {% if song.is_shared %}
-                    <div class="share-url">
-                        {{ request.scheme }}://{{ request.get_host }}/karaoke/{{ song.id }}/
+
+                <!-- Three‑dots menu -->
+                <div class="menu-container" data-song-id="{{ song.id }}">
+                    <button class="menu-button" onclick="toggleMenu(this)">⋮</button>
+                    <div class="dropdown-menu" id="menu-{{ song.id }}">
+                        <a href="/karaoke/{{ song.id }}/" class="btn">▶️ Play</a>
+                        <button class="btn share-btn {% if song.is_shared %}shared{% endif %}" 
+                                onclick="toggleShare({{ song.id }}, this)">
+                            {% if song.is_shared %}✅ Shared{% else %}🔒 Private{% endif %}
+                        </button>
+                        <button class="btn delete-btn" onclick="deleteSong({{ song.id }})">🗑️ Delete</button>
+                        {% if song.is_shared %}
+                        <div class="share-url">
+                            {{ request.scheme }}://{{ request.get_host }}/karaoke/{{ song.id }}/
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -86,27 +149,46 @@
     </div>
 
     <script>
-    function toggleShare(songId, btn) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (!csrfToken) {
-            alert('Reload page!');
-            return;
+    // Close all dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.menu-container')) {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
         }
-        
+    });
+
+    // Toggle the clicked menu
+    function toggleMenu(button) {
+        const menu = button.nextElementSibling; // the dropdown-menu
+        // Close any other open menus
+        document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+            if (m !== menu) m.classList.remove('show');
+        });
+        menu.classList.toggle('show');
+    }
+
+    // CSRF token helper
+    function getCsrfToken() {
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        return csrfInput ? csrfInput.value : '';
+    }
+
+    // Toggle share
+    function toggleShare(songId, btn) {
         btn.disabled = true;
         btn.textContent = '⏳...';
         
         fetch(`/toggle_share/${songId}/`, { 
             method: 'POST', 
             headers: { 
-                'X-CSRFToken': csrfToken.value,
+                'X-CSRFToken': getCsrfToken(),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({})
         })
         .then(response => response.json())
         .then(data => {
-            console.log('✅ Share response:', data);
             if (data.success) {
                 if (data.is_shared) {
                     btn.textContent = '✅ Shared';
@@ -125,6 +207,62 @@
         })
         .finally(() => {
             btn.disabled = false;
+        });
+    }
+
+    // Delete song function
+    function deleteSong(songId) {
+        if (!confirm('Are you sure you want to delete this song? This action cannot be undone.')) {
+            return;
+        }
+
+        const deleteBtn = document.querySelector(`#song-${songId} .delete-btn`);
+        if (deleteBtn) {
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = '⏳...';
+        }
+
+        fetch(`/delete_song/${songId}/`, { 
+            method: 'POST', 
+            headers: { 
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the song item from DOM
+                const songElement = document.getElementById(`song-${songId}`);
+                if (songElement) {
+                    songElement.remove();
+                }
+                // Update total count
+                const countSpan = document.querySelector('.song-list h3');
+                if (countSpan) {
+                    const countText = countSpan.innerText;
+                    const match = countText.match(/\((\d+)\)/);
+                    if (match) {
+                        let count = parseInt(match[1]) - 1;
+                        countSpan.innerText = `🎵 All Songs (${count})`;
+                    }
+                }
+            } else {
+                alert('Error: ' + data.error);
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.textContent = '🗑️ Delete';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error:', error);
+            alert('Network error!');
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.content = '🗑️ Delete';
+            }
         });
     }
     </script>
