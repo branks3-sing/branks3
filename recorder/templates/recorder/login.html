@@ -2,10 +2,11 @@
 <html>
 <head>
     <title>Karaoke Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: radial-gradient(circle at top, #335d8c 0%, #0b1b30 55%, #020712 100%);
+            background: #000000;
             height: 100vh; 
             display: flex; 
             align-items: center; 
@@ -24,19 +25,86 @@
         .logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); margin-bottom: 20px; }
         h2 { color: white; margin-bottom: 10px; }
         input { 
-            width: 100%; padding: 15px; margin: 10px 0; background: rgba(5,10,25,0.7); 
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; 
-            font-size: 16px; box-sizing: border-box;
+            width: 100%; padding: 15px; margin: 10px 0; 
+            background: #000000; /* pure black background */
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 10px; 
+            color: white; 
+            font-size: 16px; 
+            box-sizing: border-box;
         }
-        input:focus { outline: none; border-color: rgba(255,255,255,0.6); }
+        input:focus { 
+            outline: none; 
+            border-color: rgba(255,255,255,0.6); 
+        }
         .btn { 
-            width: 100%; padding: 15px; background: linear-gradient(135deg, #ff0066, #ff66cc); 
-            border: none; border-radius: 10px; color: white; font-size: 16px; 
-            font-weight: 600; cursor: pointer; margin-top: 20px;
+            width: 100%; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            border: none; 
+            border-radius: 10px; 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 20px;
+            transition: opacity 0.2s;
         }
-        .btn:hover { opacity: 0.9; }
+        .btn:hover { 
+            opacity: 0.9; 
+            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+        }
         .error { color: #ff6666; margin-top: 10px; }
-        .credentials { background: rgba(5,10,25,0.8); padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 14px; }
+
+        /* Contact links */
+        .contact-links-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .contact-link-item {
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 0.75rem !important;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .contact-link-item:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+            text-decoration: none !important;
+        }
+        .contact-link-item.email {
+            color: #4285F4 !important;
+            background: rgba(66, 133, 244, 0.1);
+            border: none;
+        }
+        .contact-link-item.instagram {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            text-fill-color: transparent !important;
+            border: none;
+        }
+        .contact-link-item.youtube {
+            color: #FF0000 !important;
+            background: rgba(255, 0, 0, 0.1);
+            border: none;
+        }
+        @media (max-width: 480px) {
+            .login-box { padding: 25px; }
+            .contact-link-item { font-size: 0.7rem !important; padding: 5px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -55,12 +123,26 @@
         {% if error %}
         <div class="error">{{ error }}</div>
         {% endif %}
-        
-        <div class="credentials">
-            <strong>Default Credentials:</strong><br>
-            admin / admin123<br>
-            user1 / user123<br>
-            user2 / user123
+
+        <div style="margin-top:16px; font-size:0.8rem; color:#b5c2d2; text-align:center; padding-bottom:8px;">
+            Don't have access? Contact admin:
+        </div>
+        <div class="contact-links-row">
+            <a href="mailto:branks3.singalong@gmail.com" 
+               class="contact-link-item email"
+               target="_blank">
+               📧 Email
+            </a>
+            <a href="https://www.instagram.com/branks3.sing_along/" 
+               class="contact-link-item instagram"
+               target="_blank">
+               🅾 Instagram
+            </a>
+            <a href="https://www.youtube.com/@branks3.sing_along" 
+               class="contact-link-item youtube"
+               target="_blank">
+               ▶ YouTube
+            </a>
         </div>
     </div>
 </body>
