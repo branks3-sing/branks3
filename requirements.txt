@@ -1,4 +1,4 @@
-Django==5.0.2
+Django
 gunicorn
 psycopg2-binary
 Pillow
@@ -7,7 +7,7 @@ dj-database-url
 pydub
 ffmpeg-python
 numpy
-librosa==0.10.1
-tensorflow==2.13.0
-spleeter==2.3.2
-numba==0.57.1
+librosa
+tensorflow
+spleeter
+numba
