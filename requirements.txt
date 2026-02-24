@@ -6,8 +6,3 @@ whitenoise
 dj-database-url
 pydub
 ffmpeg-python
-numpy
-librosa
-tensorflow
-spleeter
-numba
