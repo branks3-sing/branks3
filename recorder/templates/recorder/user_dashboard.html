@@ -3,32 +3,73 @@
 <head>
     <title>User Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #111; color: white; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .song-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #222; margin-bottom: 10px; border-radius: 10px; }
-        .btn { background: linear-gradient(135deg, #ff0066, #ff66cc); color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn:hover { opacity: 0.9; }
-        .no-songs { text-align: center; padding: 40px; color: #ccc; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #111; 
+            color: white; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+        /* Song item as clickable card – now only shows the song name */
+        .song-item { 
+            display: block; 
+            padding: 20px; 
+            background: #222; 
+            margin-bottom: 10px; 
+            border-radius: 10px; 
+            text-decoration: none; 
+            color: white; 
+            transition: background 0.2s; 
+        }
+        .song-item:hover { 
+            background: #333; 
+        }
+        /* Buttons – solid black */
+        .btn { 
+            background: #000; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            transition: background 0.2s; 
+        }
+        .btn:hover { 
+            background: #333; 
+        }
+        .no-songs { 
+            text-align: center; 
+            padding: 40px; 
+            color: #ccc; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>👤 {{ username }} Dashboard</h1>
-            <a href="/logout/" class="btn">🚪 Logout</a>
+            <a href="/logout/" class="btn">Logout</a>
         </div>
 
         <h3>🎵 Available Songs (Only Shared)</h3>
         {% if songs %}
             {% for song in songs %}
-            <div class="song-item">
-                <div>
-                    <strong>✅ {{ song.name }}</strong>
-                    <br><small>Ready to sing!</small>
-                </div>
-                <a href="/karaoke/{{ song.id }}/" class="btn">🎤 Sing Now</a>
-            </div>
+            <!-- Clickable card with only the song name -->
+            <a href="/karaoke/{{ song.id }}/" class="song-item">
+                {{ song.name }}
+            </a>
             {% endfor %}
         {% else %}
             <div class="no-songs">
