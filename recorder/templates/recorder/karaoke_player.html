@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 <head>
@@ -347,7 +348,7 @@
       canvasRafId = requestAnimationFrame(drawCanvas);
   }
 
-  /* ================== RECORDING (only voice) ================== */
+  /* ================== RECORDING ================== */
   recordBtn.onclick = async function() {
       if (isRecording) return;
 
@@ -374,6 +375,11 @@
               await loadAudioBuffers();
           }
 
+          // Play original song through a separate <audio> element (not recorded)
+          const playbackAudio = new Audio(originalAudio.src);
+          playbackAudio.volume = 1.0;
+          playbackAudio.play().catch(e => console.log("Playback error:", e));
+
           // Get microphone
           micStream = await navigator.mediaDevices.getUserMedia({
               audio: {
@@ -394,47 +400,36 @@
 
           micSource = audioCtx.createMediaStreamSource(micStream);
 
-          // Create accompaniment source for monitoring (will go to speakers only)
           accSource = audioCtx.createBufferSource();
           accSource.buffer = accompanimentBuffer;
 
           const actualDuration = accompanimentBuffer.duration;
           console.log("✅ Actual accompaniment duration:", actualDuration, "seconds");
 
-          // Gain for microphone (recording)
           micGain = audioCtx.createGain();
-          micGain.gain.value = 1.5;  // voice volume in recording
+          micGain.gain.value = 1.5;  // voice volume
 
-          // Gain for accompaniment (playback only)
           accGain = audioCtx.createGain();
-          accGain.gain.value = 1.0;  // volume for monitoring
+          accGain.gain.value = 0.4;  // accompaniment volume
 
-          // Destination for recording (mic only)
           destination = audioCtx.createMediaStreamDestination();
 
-          // Connect mic to recording destination
           micSource.connect(micGain);
           micGain.connect(destination);
-
-          // Connect accompaniment to speakers only (not to recording)
           accSource.connect(accGain);
-          accGain.connect(audioCtx.destination);  // play through speakers/headphones
+          accGain.connect(destination);
 
-          // Start canvas drawing
           drawCanvas();
 
-          // Start accompaniment (playback)
           accSource.start();
 
-          // Create combined stream for recording: video from canvas, audio from mic only
           const canvasStream = canvas.captureStream(30);
-          const micAudioStream = destination.stream;  // this contains only mic audio
+          const mixedAudioStream = destination.stream;
           const combinedStream = new MediaStream([
               ...canvasStream.getVideoTracks(),
-              ...micAudioStream.getAudioTracks()
+              ...mixedAudioStream.getAudioTracks()
           ]);
 
-          // Determine MIME type
           let mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
           if (!MediaRecorder.isTypeSupported(mimeType)) {
               mimeType = 'video/webm;codecs=vp9,opus';
@@ -464,13 +459,10 @@
               cancelAnimationFrame(canvasRafId);
               recordingDuration = (Date.now() - recordingStartTime) / 1000;
 
-              // Stop accompaniment if still playing
-              if (accSource) {
-                  try { accSource.stop(); accSource.disconnect(); } catch(e) {}
-                  accSource = null;
-              }
+              playbackAudio.pause();
+              playbackAudio.currentTime = 0;
 
-              cleanupAudioSources(); // this will stop mic etc.
+              cleanupAudioSources();
 
               if (recordedChunks.length > 0) {
                   const blob = new Blob(recordedChunks, { type: mimeType });
