@@ -79,6 +79,15 @@ def toggle_share(request, song_id):
 def karaoke_player(request, song_id, slug=None):   # slug optional
     song = get_object_or_404(Song, id=song_id)
 
+    # --------------------------------------------------------------
+    
+    if slug is None:
+        from django.utils.text import slugify
+        new_url = f"/{song.id}/{slugify(song.name)}/"
+        return redirect(new_url)
+    # --------------------------------------------------------------
+
+    # Anonymous user handling
     if not request.user.is_authenticated:
         if song.is_shared:
             return render(request, 'recorder/karaoke_player.html', {
@@ -87,14 +96,17 @@ def karaoke_player(request, song_id, slug=None):   # slug optional
                 'role': 'guest'
             })
         else:
-            return redirect(f'/login/?next=/{song.id}/{slug or ""}')  # slug ఉంటే పంపించండి
+         
+            return redirect(f'/login/?next=/{song.id}/{slug}/')
 
+    # Authenticated user
     try:
         profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
         profile = None
 
     if profile and profile.role == 'admin':
+        # admin can access all
         pass
     elif not song.is_shared:
         return redirect('/user/')
