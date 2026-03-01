@@ -130,7 +130,7 @@
                 <div class="menu-container" data-song-id="{{ song.id }}">
                     <button class="menu-button" onclick="toggleMenu(this)">⋮</button>
                     <div class="dropdown-menu" id="menu-{{ song.id }}">
-                        <a href="/karaoke/{{ song.id }}/" class="btn">▶️ Play</a>
+                        <a href="/{{ song.id }}/{{ song.name|slugify }}/" class="btn">▶️ Play</a>
                         <button class="btn share-btn {% if song.is_shared %}shared{% endif %}" 
                                 onclick="toggleShare({{ song.id }}, this)">
                             {% if song.is_shared %}✅ Shared{% else %}🔒 Private{% endif %}
@@ -138,7 +138,7 @@
                         <button class="btn delete-btn" onclick="deleteSong({{ song.id }})">🗑️ Delete</button>
                         {% if song.is_shared %}
                         <div class="share-url">
-                            {{ request.scheme }}://{{ request.get_host }}/karaoke/{{ song.id }}/
+                            {{ request.scheme }}://{{ request.get_host }}/{{ song.id }}/{{ song.name|slugify }}/
                         </div>
                         {% endif %}
                     </div>
