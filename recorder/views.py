@@ -26,9 +26,8 @@ def login_view(request):
             except UserProfile.DoesNotExist:
                 return redirect('/user/')
         else:
-            return render(request, 'recorder/login.html', {'error': 'Invalid credentials!'})  # ✅ FIXED
-    return render(request, 'recorder/login.html')  # ✅ FIXED
-
+            return render(request, 'recorder/login.html', {'error': 'Invalid credentials!'})
+    return render(request, 'recorder/login.html')
 
 def logout_view(request):
     auth_logout(request)
@@ -61,7 +60,6 @@ def user_dashboard(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-@csrf_exempt
 def toggle_share(request, song_id):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Login required'}, status=403)
@@ -78,24 +76,38 @@ def toggle_share(request, song_id):
     except (UserProfile.DoesNotExist, Song.DoesNotExist):
         return JsonResponse({'success': False, 'error': 'Not found'}, status=404)
 
-@login_required
 def karaoke_player(request, song_id):
     song = get_object_or_404(Song, id=song_id)
-    profile = UserProfile.objects.get(user=request.user)
-    
-    # Check access permission
-    if profile.role != 'admin' and not song.is_shared:
+
+    # Anonymous user handling
+    if not request.user.is_authenticated:
+        if song.is_shared:
+            return render(request, 'recorder/karaoke_player.html', {
+                'song': song,
+                'username': 'Guest',
+                'role': 'guest'
+            })
+        else:
+            return redirect(f'/login/?next=/karaoke/{song.id}/')
+
+    # Authenticated user
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        profile = None
+
+    if profile and profile.role == 'admin':
+        # admin can access all
+        pass
+    elif not song.is_shared:
         return redirect('/user/')
-    
-    context = {
+
+    return render(request, 'recorder/karaoke_player.html', {
         'song': song,
         'username': request.user.username,
-        'role': profile.role
-    }
-    return render(request, 'recorder/karaoke_player.html', context)
+        'role': profile.role if profile else 'user'
+    })
 
-@login_required
-@login_required
 @login_required
 def upload_song(request):
     if request.method == 'POST':
@@ -103,7 +115,6 @@ def upload_song(request):
         if profile.role != 'admin':
             return redirect('/admin/')
         
-        # ✅ CUSTOM SONG NAME + FALLBACK
         song_name = request.POST.get('song_name', '').strip()
         original_file = request.FILES.get('original_file')
         accompaniment_file = request.FILES.get('accompaniment_file')
@@ -111,7 +122,7 @@ def upload_song(request):
         
         if original_file and accompaniment_file:
             if song_name:
-                final_name = song_name[:200]  # Max 200 chars
+                final_name = song_name[:200]
             else:
                 final_name = os.path.splitext(original_file.name)[0].replace('_original', '').strip()
                 final_name = final_name or 'New Song'
@@ -129,8 +140,6 @@ def upload_song(request):
             return redirect('/admin/?page=songs')
     
     return redirect('/admin/')
-
-
 
 @csrf_exempt
 def upload_recording(request, song_id):
