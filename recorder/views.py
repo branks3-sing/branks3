@@ -180,3 +180,33 @@ def upload_recording(request, song_id):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+@require_http_methods(["POST"])
+def delete_song(request, song_id):
+    try:
+        # Admin 
+        profile = UserProfile.objects.get(user=request.user)
+        if profile.role != 'admin':
+            return JsonResponse({'success': False, 'error': 'Admin only'}, status=403)
+        
+        song = Song.objects.get(id=song_id)
+        
+
+        if song.original_file and os.path.isfile(song.original_file.path):
+            os.remove(song.original_file.path)
+        if song.accompaniment_file and os.path.isfile(song.accompaniment_file.path):
+            os.remove(song.accompaniment_file.path)
+        if song.lyrics_image and os.path.isfile(song.lyrics_image.path):
+            os.remove(song.lyrics_image.path)
+        
+
+        song.delete()
+        
+        return JsonResponse({'success': True})
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'User profile not found'}, status=404)
+    except Song.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Song not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
