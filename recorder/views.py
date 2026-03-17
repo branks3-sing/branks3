@@ -210,3 +210,7 @@ def delete_song(request, song_id):
         return JsonResponse({'success': False, 'error': 'Song not found'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def ads_txt(request):
+    data = "google.com, pub-2373888797323762, DIRECT, f08c47fec0942fa0"
+    return HttpResponse(data, content_type="text/plain")
