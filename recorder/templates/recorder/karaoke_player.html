@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -209,7 +210,7 @@
   (function() {
     "use strict";
 
-    /* ---------- GLOBAL STATE ---------- */
+    /* ---------- GLOBAL STATE (clean) ---------- */
     let mediaRecorder;
     let recordedChunks = [];
     let lastRecordingURL = null;
@@ -248,7 +249,7 @@
     const recordingVideoPlayer = document.getElementById("recordingVideoPlayer");
     const videoControls = document.getElementById("videoControls");
 
-    /* ---------- HELPER: resume AudioContext ---------- */
+    /* ---------- HELPER: resume AudioContext on any user interaction ---------- */
     async function resumeAudioContext() {
       if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)({
@@ -262,13 +263,15 @@
       return audioContext;
     }
 
-    /* ---------- LOAD BUFFERS ---------- */
+    /* ---------- LOAD BUFFERS (once, early) ---------- */
     async function loadAudioBuffers() {
       const ctx = await resumeAudioContext();
       try {
+        // original
         const origResp = await fetch(originalAudioEl.src);
         const origArray = await origResp.arrayBuffer();
         originalAudioBuffer = await ctx.decodeAudioData(origArray);
+        // accompaniment
         const accResp = await fetch(accompanimentEl.src);
         const accArray = await accResp.arrayBuffer();
         accompanimentBuffer = await ctx.decodeAudioData(accArray);
@@ -278,13 +281,13 @@
       }
     }
 
-    /* ---------- DRAW CANVAS ---------- */
+    /* ---------- DRAW CANVAS (exactly as before) ---------- */
     function drawCanvas() {
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const canvasW = canvas.width;
-      const canvasH = canvas.height * 0.75;
+      const canvasH = canvas.height * 0.75;   // image occupies 75% height
 
       const imgRatio = mainBg.naturalWidth / mainBg.naturalHeight;
       const canvasRatio = canvasW / canvasH;
@@ -299,19 +302,20 @@
       }
 
       const x = (canvasW - drawW) / 2;
-      const y = 0;
+      const y = 0;  // top aligned
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(mainBg, x, y, drawW, drawH);
 
+      // logo top-left (small)
       const logoSize = 60;
       ctx.drawImage(logoImg, 20, 20, logoSize, logoSize);
 
       canvasRafId = requestAnimationFrame(drawCanvas);
     }
 
-    /* ---------- CLEANUP ---------- */
+    /* ---------- CLEANUP after recording / playback ---------- */
     function cleanupAudioSources() {
       if (accSource) {
         try { accSource.stop(); accSource.disconnect(); } catch (e) {}
@@ -343,7 +347,7 @@
       }
     }
 
-    /* ---------- STOP RECORDING ---------- */
+    /* ---------- STOP RECORDING (clean & safe) ---------- */
     function stopRecording() {
       if (!isRecording) return;
       if (autoStopTimer) {
@@ -351,8 +355,9 @@
         autoStopTimer = null;
       }
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
+        mediaRecorder.stop();   // triggers onstop event
       }
+      // also stop the original audio that is playing through <audio> element
       originalAudioEl.pause();
       originalAudioEl.currentTime = 0;
 
@@ -364,11 +369,12 @@
       }
       isRecording = false;
 
+      // UI update will happen inside mediaRecorder.onstop, but also revert now
       stopBtn.style.display = "none";
       statusEl.innerText = "Processing recording...";
     }
 
-    /* ---------- RESET UI AFTER ERROR ---------- */
+    /* ---------- RESET UI after error ---------- */
     function resetUIAfterError() {
       isRecording = false;
       isSongPlaying = false;
@@ -390,15 +396,17 @@
       statusEl.innerText = "Ready 🎤";
     }
 
-    /* ---------- PLAY ORIGINAL (Web Audio) ---------- */
+    /* ---------- PLAY ORIGINAL (Web Audio) – one click, fast ---------- */
     playBtn.onclick = async function() {
-      await resumeAudioContext();
+      await resumeAudioContext();                // ensure context running
       if (!originalAudioBuffer || !accompanimentBuffer) {
-        await loadAudioBuffers();
+        await loadAudioBuffers();                 // lazy load if not ready
       }
       if (!isSongPlaying) {
+        // stop any recording that might be ongoing
         if (isRecording) stopRecording();
 
+        // if there's an existing source, clean it
         if (originalSource) {
           originalSource.stop();
           originalSource.disconnect();
@@ -420,6 +428,7 @@
           originalSource = null;
         };
       } else {
+        // stop current original playback
         if (originalSource) {
           originalSource.stop();
           originalSource.disconnect();
@@ -431,10 +440,11 @@
       }
     };
 
-    /* ---------- RECORD BUTTON ---------- */
+    /* ---------- RECORD BUTTON (one click, instant feedback) ---------- */
     recordBtn.onclick = async function() {
       if (isRecording) return;
 
+      // Resume audio context right away
       await resumeAudioContext();
 
       // Stop any playing original (Web Audio)
@@ -446,21 +456,24 @@
         playBtn.innerText = "▶ Play Original";
       }
 
+      // Hide play/record, show stop
       playBtn.style.display = "none";
       recordBtn.style.display = "none";
       stopBtn.style.display = "inline-block";
       statusEl.innerText = "🎙 Requesting mic & starting...";
 
       try {
+        // Load buffers if missing
         if (!originalAudioBuffer || !accompanimentBuffer) {
           await loadAudioBuffers();
         }
 
-        // ===== PLAY THE ORIGINAL SONG FOR THE SINGER (not recorded) =====
+        // IMPORTANT: use the existing <audio> element to play the original song during recording
+        // (so the singer hears it, but it's NOT mixed into the recording)
         originalAudioEl.currentTime = 0;
-        await originalAudioEl.play();   // singer hears the guide track
+        await originalAudioEl.play();   // play through device speaker
 
-        // Microphone
+        // Get microphone (fast, with minimal constraints)
         micStream = await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: false,
@@ -472,16 +485,16 @@
           video: false
         });
 
-        // Build graph for recorded audio: mic + accompaniment
+        // Build Web Audio graph for accompaniment + mic (recorded)
         micSource = audioContext.createMediaStreamSource(micStream);
 
         accSource = audioContext.createBufferSource();
         accSource.buffer = accompanimentBuffer;
 
         micGain = audioContext.createGain();
-        micGain.gain.value = 1.5;   // voice volume
+        micGain.gain.value = 1.5;   // voice
         accGain = audioContext.createGain();
-        accGain.gain.value = 0.7;   // accompaniment volume
+        accGain.gain.value = 0.7;   // accompaniment
 
         destination = audioContext.createMediaStreamDestination();
 
@@ -490,8 +503,11 @@
         accSource.connect(accGain);
         accGain.connect(destination);
 
+        // start drawing on canvas
         drawCanvas();
-        accSource.start();   // accompaniment starts (will be recorded)
+
+        // start accompaniment (recorded track)
+        accSource.start();
 
         const canvasStream = canvas.captureStream(30);
         const audioStream = destination.stream;
@@ -500,7 +516,7 @@
           ...audioStream.getAudioTracks()
         ]);
 
-        // MIME type selection
+        // pick best mime type
         let mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
         if (!MediaRecorder.isTypeSupported(mimeType)) {
           mimeType = 'video/webm;codecs=vp9,opus';
@@ -526,6 +542,7 @@
         };
 
         mediaRecorder.onstop = () => {
+          // cancel canvas drawing
           if (canvasRafId) {
             cancelAnimationFrame(canvasRafId);
             canvasRafId = null;
@@ -533,7 +550,7 @@
 
           recordingDuration = (Date.now() - recordingStartTime) / 1000;
 
-          // Stop the guide track
+          // stop the original audio that was playing for singer
           originalAudioEl.pause();
           originalAudioEl.currentTime = 0;
 
@@ -552,11 +569,13 @@
             const secs = Math.floor(recordingDuration % 60);
             finalStatus.innerText = `✅ Complete (${mins}:${secs.toString().padStart(2,'0')})`;
 
+            // dynamic filename
             let songName = "{{ song.title|default:'karaoke' }}".replace(/[^a-zA-Z0-9]/g, '_');
             let ext = mimeType.includes('mp4') ? '_KARAOKE.mp4' : '_KARAOKE.webm';
             downloadRecordingBtn.href = url;
             downloadRecordingBtn.download = songName + ext;
 
+            // Play button inside final screen
             playRecordingBtn.onclick = () => {
               if (!isPlayingRecording) {
                 recordingVideoPlayer.src = url;
@@ -580,6 +599,7 @@
             };
           }
 
+          // reset main UI buttons
           playBtn.style.display = "inline-block";
           recordBtn.style.display = "inline-block";
           stopBtn.style.display = "none";
@@ -587,10 +607,11 @@
           isRecording = false;
         };
 
-        mediaRecorder.start(1000);
+        mediaRecorder.start(1000);  // collect every second
         isRecording = true;
         statusEl.innerText = "🎙 Recording...";
 
+        // auto-stop after accompaniment duration + a little buffer
         const durationMs = (accompanimentBuffer.duration * 1000) + 500;
         autoStopTimer = setTimeout(() => {
           if (isRecording) {
@@ -606,17 +627,18 @@
       }
     };
 
-    /* ---------- STOP button ---------- */
+    /* ---------- STOP button (manual) ---------- */
     stopBtn.onclick = function() {
       stopRecording();
       statusEl.innerText = "⏹ Stopped recording";
     };
 
-    /* ---------- NEW RECORDING button ---------- */
+    /* ---------- NEW RECORDING button (final screen) ---------- */
     newRecordingBtn.onclick = function() {
-      closeVideoPlayer();
+      closeVideoPlayer();  // defined globally
       finalDiv.style.display = "none";
 
+      // stop any lingering playback
       if (isSongPlaying && originalSource) {
         originalSource.stop();
         originalSource.disconnect();
@@ -641,10 +663,11 @@
         lastRecordingURL = null;
       }
 
+      // ensure audio context is ready for next recording
       resumeAudioContext();
     };
 
-    /* ---------- VIDEO PLAYER controls ---------- */
+    /* ---------- VIDEO PLAYER controls (exposed to global for onclick) ---------- */
     window.closeVideoPlayer = function() {
       if (recordingVideoPlayer) {
         recordingVideoPlayer.pause();
@@ -669,12 +692,14 @@
       }
     };
 
+    // video tap toggle play/pause
     recordingVideoPlayer.addEventListener('click', function() {
       if (this.paused) this.play(); else this.pause();
     });
 
-    /* ---------- INIT ---------- */
+    /* ---------- PRELOAD & INIT (fast startup) ---------- */
     window.addEventListener('load', async () => {
+      // resume audio context (will be suspended until user gesture, but preload buffers)
       await resumeAudioContext();
       loadAudioBuffers().then(() => {
         statusEl.innerText = "Ready 🎤 – tap buttons";
@@ -683,16 +708,19 @@
       });
     });
 
+    // additional touchstart to resume audio (just in case)
     document.addEventListener('touchstart', async () => {
       await resumeAudioContext();
     }, { once: true });
 
+    // clean up on page unload
     window.addEventListener('beforeunload', () => {
       if (lastRecordingURL) URL.revokeObjectURL(lastRecordingURL);
       if (audioContext) audioContext.close();
       cleanupAudioSources();
     });
 
+    // expose draw stop on page hide
     window.addEventListener('pagehide', () => {
       if (canvasRafId) cancelAnimationFrame(canvasRafId);
     });
