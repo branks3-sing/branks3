@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('ads.txt', views.ads_txt),
-    path('', views.login_view, name='login'),
+    path('', views.landing_view, name='landing'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('admin/', views.admin_dashboard, name='admin_dashboard'),
@@ -16,4 +16,8 @@ urlpatterns = [
     # NEW: song ID + slug – format
     path('<int:song_id>/<slug:slug>/', views.karaoke_player, name='song_detail'),
     path('delete_song/<int:song_id>/', views.delete_song, name='delete_song'),
+
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
 ]
