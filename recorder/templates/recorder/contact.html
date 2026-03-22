@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact </title>
+    <link rel="icon" type="image/png" href="{% static 'media/logo/branks3_logo.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 40px 20px;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(5,10,25,0.85);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .contact-methods {
+            margin: 30px 0;
+            text-align: left;
+        }
+        .method {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .method:hover {
+            transform: translateX(5px);
+        }
+        .method h3 {
+            margin: 0 0 8px;
+            font-size: 1.2rem;
+        }
+        .method a {
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .method a:hover {
+            text-decoration: underline;
+        }
+        /* Email style */
+        .method.email h3,
+        .method.email a {
+            color: #4285F4;
+        }
+        .method.email:hover {
+            background: rgba(66,133,244,0.15);
+        }
+        /* Instagram style - gradient text */
+        .method.instagram h3,
+        .method.instagram a {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        .method.instagram:hover {
+            background: rgba(193,53,132,0.15);
+        }
+        /* YouTube style */
+        .method.youtube h3,
+        .method.youtube a {
+            color: #FF0000;
+        }
+        .method.youtube:hover {
+            background: rgba(255,0,0,0.15);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>For any queries, issues, or assistance, please reach out using the methods below. We'll get back to you as soon as possible.</p>
+
+        <div class="contact-methods">
+            <div class="method email">
+                <h3>📧 Email</h3>
+                <p><a href="mailto:branks3.singalong@gmail.com">branks3.singalong@gmail.com</a></p>
+            </div>
+            <div class="method instagram">
+                <h3>🅾 Instagram</h3>
+                <p><a href="https://www.instagram.com/branks3.sing_along/" target="_blank">@branks3.sing_along</a></p>
+            </div>
+            <div class="method youtube">
+                <h3>▶ YouTube</h3>
+                <p><a href="https://www.youtube.com/@branks3.sing_along" target="_blank">Branks3 Sing Along</a></p>
+            </div>
+        </div>
+
+        <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
