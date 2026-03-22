@@ -215,3 +215,18 @@ def delete_song(request, song_id):
 def ads_txt(request):
     data = "google.com, pub-2373888797323762, DIRECT, f08c47fec0942fa0"
     return HttpResponse(data, content_type="text/plain")
+
+def landing_view(request):
+    """Display random shared songs and a login button."""
+    shared_songs = Song.objects.filter(is_shared=True)
+    # Randomly select up to 6 songs (or adjust the number as needed)
+    random_songs = shared_songs.order_by('?')[:6]
+    return render(request, 'recorder/landing.html', {'songs': random_songs})
+def privacy_policy(request):
+    return render(request, 'recorder/privacy_policy.html')
+
+def contact(request):
+    return render(request, 'recorder/contact.html')
+
+def about(request):
+    return render(request, 'recorder/about.html')
