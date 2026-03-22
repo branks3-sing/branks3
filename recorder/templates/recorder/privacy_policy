@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Privacy Policy </title>
+    <link rel="icon" type="image/png" href="{% static 'media/logo/branks3_logo.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 40px 20px;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(5,10,25,0.85);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #ddd;
+        }
+        a {
+            color: #4285F4;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privacy Policy</h1>
+
+        <h2>1. Access Restriction</h2>
+        <p>This application is strictly restricted. Only accounts created by the administrator or developer are allowed to log in. Public user registration or access is not available.</p>
+
+        <h2>2. Information We Collect</h2>
+        <p>We do not collect, store, or process any personal information from users. This application does not provide user registration or account creation features, and no personal data is required to use the service.</p>
+
+        <h2>3. Audio & Data Storage</h2>
+        <p>This application does not store any audio recordings or user-generated content. Any audio or activity performed within the application is temporary and is not saved on our servers.</p>
+
+        <h2>4. Data Usage</h2>
+        <p>Since this application does not collect or store any personal data, no user information is used for any purpose. The application functions without processing user data.</p>
+
+        <h2>5. Data Sharing</h2>
+        <p>This application does not collect or store personal user data. Therefore, no user information is shared, sold, or distributed to any third parties.</p>
+
+        <h2>6. Security</h2>
+        <p>We implement standard security practices to ensure safe and restricted access to the application.</p>
+
+        <h2>7. Changes to This Policy</h2>
+        <p>This policy may be updated if system functionality changes. Updates will be reflected on this page.</p>
+
+        <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
