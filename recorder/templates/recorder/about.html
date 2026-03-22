@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About - Sing Along</title>
+    <link rel="icon" type="image/png" href="{% static 'media/logo/branks3_logo.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 40px 20px;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(5,10,25,0.85);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #ddd;
+        }
+        a {
+            color: #4285F4;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About Sing Along</h1>
+
+        <p>Sing Along is a karaoke-based application designed to provide a smooth singing and recording experience. Users can sing along with music tracks while recording their performance in real time.</p>
+
+        <p>This platform allows controlled access, where only authorized users created by the administrator or developer can login. Public registration is not available.</p>
+
+        <p>The application is focused on simple karaoke playback and recording functionality without storing or processing any user data.</p>
+
+        <p><strong>Key Features:</strong></p>
+        <ul>
+            <li> Real-time karaoke recording experience</li>
+            <li> Music tracks for karaoke singing</li>
+            <li> Lyrics display for easy singing</li>
+            <li> Restricted and controlled access</li>
+            <li> No data collection or storage</li>
+        </ul>
+
+        <p>This platform is developed to enable karaoke singing and recording functionality in a simple and secure environment.</p>
+
+        <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
