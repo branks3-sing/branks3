@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🎤 Sing Along </title>
+  <title>🎤 Sing Along</title>
   <link rel="icon" type="image/png" href="/media/logo/branks3_logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <style>
@@ -380,6 +380,7 @@
     let audioContext = null;
     let accMediaSource = null;
     let micSource = null, micGain = null, accGain = null;
+    let monitorGain = null;            // for speaker output
     let mixDestination = null, voiceDestination = null;
     let canvasRafId = null;
     let dummyCanvasRafId = null;
@@ -612,7 +613,7 @@
       });
     }
 
-    // ---------- DRAW CANVAS (background + logo) with dynamic camera dimensions ----------
+    // ---------- DRAW CANVAS (background + logo) ----------
     function drawCanvas() {
       const w = canvasWithout.width;
       const h = canvasWithout.height;
@@ -661,6 +662,7 @@
       if (micSource) { try { micSource.disconnect(); } catch(e) {}; micSource = null; }
       if (micGain) { try { micGain.disconnect(); } catch(e) {}; micGain = null; }
       if (accGain) { try { accGain.disconnect(); } catch(e) {}; accGain = null; }
+      if (monitorGain) { try { monitorGain.disconnect(); } catch(e) {}; monitorGain = null; }
       if (mixDestination) { try { mixDestination.disconnect(); } catch(e) {}; mixDestination = null; }
       if (voiceDestination) { try { voiceDestination.disconnect(); } catch(e) {}; voiceDestination = null; }
       if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
@@ -773,7 +775,7 @@
 
     // ---------- PLAY ORIGINAL ----------
     playBtn.onclick = async function() {
-      if (isRecording) stopRecording();
+      if (isRecording) return;
       if (!originalAudioEl.paused) {
         originalAudioEl.pause();
         originalAudioEl.currentTime = 0;
@@ -781,6 +783,7 @@
         statusEl.innerText = "⏹ Stopped";
       } else {
         try {
+          await resumeAudioContext();   // ensure context active
           await originalAudioEl.play();
           playBtn.innerText = "⏹ Stop Original";
           statusEl.innerText = "🎵 Playing original...";
@@ -833,7 +836,7 @@
       });
     }
 
-    // ---------- RECORD BUTTON – with proper camera size handling ----------
+    // ---------- RECORD BUTTON – fixed mobile playback & camera ----------
     recordBtn.onclick = async function() {
       if (isRecording) return;
       if (!originalAudioEl.paused) {
@@ -852,45 +855,26 @@
 
         // Microphone
         micStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: false,
-            noiseSuppression: true,
-            autoGainControl: false,
-            channelCount: 1,
-            sampleRate: 48000
-          },
+          audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: false, channelCount: 1, sampleRate: 48000 },
           video: false
         });
 
-        // Camera – try to get real stream
+        // Camera – try real stream
         useDummy = false;
         let cameraReady = false;
-        let targetWidth = 720, targetHeight = 1280; // fallback portrait dimensions
+        let targetWidth = 720, targetHeight = 1280;
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: { 
-              facingMode: "user",
-              width: { ideal: 1080 },
-              height: { ideal: 1920 }
-            },
+            video: { facingMode: "user", width: { ideal: 1080 }, height: { ideal: 1920 } },
             audio: false
           });
           cameraPreview.srcObject = cameraStream;
           await cameraPreview.play();
           await waitForVideo(cameraPreview);
-          console.log('Camera ready:', cameraPreview.videoWidth, 'x', cameraPreview.videoHeight);
-          
-          // Use camera's actual dimensions (swap if landscape)
           let camW = cameraPreview.videoWidth;
           let camH = cameraPreview.videoHeight;
-          // Force portrait orientation for recording (most front cams are already portrait)
-          if (camW > camH) {
-            targetWidth = Math.min(camH, 1080);
-            targetHeight = Math.min(camW, 1920);
-          } else {
-            targetWidth = Math.min(camW, 1080);
-            targetHeight = Math.min(camH, 1920);
-          }
+          if (camW > camH) { targetWidth = Math.min(camH, 1080); targetHeight = Math.min(camW, 1920); }
+          else { targetWidth = Math.min(camW, 1080); targetHeight = Math.min(camH, 1920); }
           cameraContainer.classList.add('visible');
           cameraReady = true;
         } catch (camErr) {
@@ -905,43 +889,43 @@
           cameraContainer.classList.remove('visible');
         }
 
-        // Set canvas dimensions to match camera size
         canvasWithout.width = targetWidth;
         canvasWithout.height = targetHeight;
         drawCanvas();
 
-        // Countdown before recording starts (only if camera is real)
+        // Short countdown only if camera is real
         if (cameraReady) {
-          let countdown = 5;
-          statusEl.innerText = `🎥 Camera ready – starting in ${countdown}...`;
-          await new Promise((resolve) => {
-            const interval = setInterval(() => {
-              countdown--;
-              if (countdown > 0) {
-                statusEl.innerText = `🎥 Camera ready – starting in ${countdown}...`;
-              } else {
-                clearInterval(interval);
-                resolve();
-              }
-            }, 1000);
-          });
+          for (let i = 3; i > 0; i--) {
+            statusEl.innerText = `🎥 Recording starts in ${i}...`;
+            await new Promise(r => setTimeout(r, 1000));
+          }
         }
 
-        // Build audio graph
+        // Build audio graph with monitoring to speakers
         micSource = audioContext.createMediaStreamSource(micStream);
         micGain = audioContext.createGain();
-        micGain.gain.value = 2.0;
+        micGain.gain.value = 1.5;      // vocal volume for mix
         accGain = audioContext.createGain();
-        accGain.gain.value = 0.1;
+        accGain.gain.value = 0.15;     // accompaniment volume for mix (lower)
+        monitorGain = audioContext.createGain();
+        monitorGain.gain.value = 0.8;   // monitoring volume to speakers
+
         mixDestination = audioContext.createMediaStreamDestination();
         voiceDestination = audioContext.createMediaStreamDestination();
 
+        // Connections for recording
         micSource.connect(micGain);
         micGain.connect(mixDestination);
         micGain.connect(voiceDestination);
         accMediaSource.connect(accGain);
         accGain.connect(mixDestination);
 
+        // Monitoring connections (so user hears themselves + accompaniment)
+        micGain.connect(monitorGain);
+        accGain.connect(monitorGain);
+        monitorGain.connect(audioContext.destination);
+
+        // Play accompaniment and original (original is not in graph, just for reference)
         await Promise.all([
           accompanimentEl.play(),
           originalAudioEl.play()
@@ -957,17 +941,14 @@
           const { track } = await setupMirroredCameraTrack(cameraPreview, targetWidth, targetHeight);
           videoTrackWithFace = track;
         } else {
-          // Dummy fallback
           videoTrackWithFace = dummyCanvas.captureStream(30).getVideoTracks()[0];
         }
 
-        // Build four streams
         const streamMixNoFace = new MediaStream([videoTrackCanvas, audioTrackMix.clone()]);
         const streamMixWithFace = new MediaStream([videoTrackWithFace, audioTrackMix.clone()]);
         const streamVoiceNoFace = new MediaStream([videoTrackCanvas, audioTrackVoice.clone()]);
         const streamVoiceWithFace = new MediaStream([videoTrackWithFace, audioTrackVoice.clone()]);
 
-        // MIME type selection
         let mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
         if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4;codecs=avc1.4D401E,mp4a.40.2';
         if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp9,opus';
