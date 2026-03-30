@@ -2,57 +2,144 @@
 <html>
 <head>
     <title>User Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #111; 
-            color: white; 
-            margin: 0; 
-            padding: 20px; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111;
+            color: white;
+            margin: 0;
+            padding: 40px 20px;
         }
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
-        /* Song item as clickable card – now only shows the song name */
-        .song-item { 
-            display: block; 
-            padding: 20px; 
-            background: #222; 
-            margin-bottom: 10px; 
-            border-radius: 10px; 
-            text-decoration: none; 
-            color: white; 
-            transition: background 0.2s; 
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: rgba(5,10,25,0.85);
+            border-radius: 12px;
+            padding: 15px 25px;
+            border: 1px solid rgba(255,255,255,0.15);
         }
-        .song-item:hover { 
-            background: #333; 
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
         }
-        /* Buttons – solid black */
-        .btn { 
-            background: #000; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            text-decoration: none; 
-            display: inline-block; 
-            transition: background 0.2s; 
+
+        /* Song card styles (matching Sing Along homepage) */
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px 0;
         }
-        .btn:hover { 
-            background: #333; 
+
+        .song-item {
+            margin-bottom: 15px;
         }
-        .no-songs { 
-            text-align: center; 
-            padding: 40px; 
-            color: #ccc; 
+
+        .song-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(5,10,25,0.85);
+            border-radius: 12px;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .song-link:hover {
+            background: rgba(5,10,25,0.95);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .song-thumbnail {
+            width: 50px;
+            height: 50px;
+            background: #111;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .song-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .song-thumbnail .no-image {
+            font-size: 24px;
+            color: #888;
+        }
+
+        .song-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            flex-grow: 1;
+        }
+
+        /* Button – solid black as in original dashboard */
+        .btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #333;
+        }
+
+        .no-songs {
+            text-align: center;
+            padding: 40px;
+            background: rgba(5,10,25,0.5);
+            border-radius: 15px;
+            margin: 40px 0;
+            color: #ccc;
+        }
+
+        @media (max-width: 600px) {
+            .song-link {
+                padding: 10px 15px;
+            }
+            .song-thumbnail {
+                width: 40px;
+                height: 40px;
+            }
+            .song-name {
+                font-size: 1rem;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -63,14 +150,25 @@
             <a href="/logout/" class="btn">Logout</a>
         </div>
 
-        <h3>🎵 Available Songs (Only Shared)</h3>
+        <h3 style="margin-bottom: 20px;">🎵 Available Songs (Only Shared)</h3>
+
         {% if songs %}
-            {% for song in songs %}
-            <!-- Clickable card with only the song name -->
-            <a href="/karaoke/{{ song.id }}/" class="song-item">
-                {{ song.name }}
-            </a>
-            {% endfor %}
+            <ul class="song-list">
+                {% for song in songs %}
+                    <li class="song-item">
+                        <a href="/karaoke/{{ song.id }}/" class="song-link">
+                            <div class="song-thumbnail">
+                                {% if song.lyrics_image %}
+                                    <img src="{{ song.lyrics_image.url }}" alt="{{ song.name }}">
+                                {% else %}
+                                    <div class="no-image">🎵</div>
+                                {% endif %}
+                            </div>
+                            <div class="song-name">{{ song.name }}</div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         {% else %}
             <div class="no-songs">
                 <h3>❌ No shared songs available</h3>
