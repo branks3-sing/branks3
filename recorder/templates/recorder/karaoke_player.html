@@ -2,661 +2,823 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🎤 Sing Along </title>
+  <title> Sing Along </title>
   <link rel="icon" type="image/png" href="/media/logo/branks3_logo.png">
-  <!-- logo image is placed inside body, not here -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <style>
-    /* === EXACT same styles – completely untouched, only readability === */
-    * { 
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box; 
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
-      overflow: hidden !important;
-      width: 100% !important;
-      height: 100% !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      background: #000 !important;
-      touch-action: manipulation;
+      overflow: hidden !important; width: 100% !important; height: 100% !important;
+      position: fixed !important; top: 0 !important; left: 0 !important;
+      background: #000 !important; touch-action: manipulation;
     }
-    body { 
-      background: #000; 
-      font-family: 'Poppins', sans-serif; 
-      height: 100% !important;
-      width: 100% !important;
-      overflow: hidden !important;
-      position: fixed !important;
-      margin: 0 !important;
-      padding: 0 !important;
+    body {
+      background: #000; font-family: 'Poppins', sans-serif;
+      height: 100% !important; width: 100% !important;
+      overflow: hidden !important; position: fixed !important;
+      margin: 0 !important; padding: 0 !important;
     }
     .karaoke-wrapper {
-      width: 100% !important;
-      height: 100% !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      background: #111 !important;
-      overflow: hidden !important;
-      aspect-ratio: 9 / 16 !important;
+      width: 100% !important; height: 100% !important;
+      position: absolute !important; top: 0 !important; left: 0 !important;
+      background: #111 !important; overflow: hidden !important;
     }
-    #status { 
-      position: absolute; 
-      top: 10px; 
-      width: 100%; 
-      text-align: center; 
-      font-size: 12px; 
-      color: #ccc; 
-      z-index: 20; 
-      text-shadow: 1px 1px 6px rgba(0,0,0,0.9); 
-      padding: 5px;
+    #status {
+      position: absolute; top: 10px; width: 100%; text-align: center;
+      font-size: 12px; color: #ccc; z-index: 20;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.9); padding: 5px;
     }
-    .reel-bg { 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100% !important; 
-      height: 75% !important;          /* image occupies 75% of screen */
-      object-fit: contain !important;
-      object-position: center !important;
+    .reel-bg {
+      position: absolute; top: 0; left: 0;
+      width: 100% !important; height: 75% !important;
+      object-fit: contain !important; object-position: center !important;
     }
-    .controls { 
-      position: absolute; 
-      top: 76% !important;              /* 75% image + 1% gap */
-      left: 0;
-      width: 100%;
-      text-align: center; 
-      z-index: 30; 
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 5px;
-      padding: 10px;
-      box-sizing: border-box;
+    .controls {
+      position: absolute; top: 76% !important; left: 0; width: 100%;
+      text-align: center; z-index: 30; display: flex;
+      justify-content: center; flex-wrap: wrap; gap: 5px;
+      padding: 10px; box-sizing: border-box;
     }
-    button { 
-      background: linear-gradient(135deg, #ff0066, #ff66cc); 
-      border: none; 
-      color: white; 
-      padding: 10px 15px; 
-      border-radius: 20px; 
-      font-size: 12px; 
-      margin: 2px; 
-      box-shadow: 0px 3px 15px rgba(255,0,128,0.4); 
-      cursor: pointer; 
-      min-width: 100px;
-      flex: 1;
-      max-width: 150px;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
+    button {
+      background: linear-gradient(135deg, #ff0066, #ff66cc);
+      border: none; color: white; padding: 10px 15px;
+      border-radius: 20px; font-size: 12px; margin: 2px;
+      box-shadow: 0px 3px 15px rgba(255,0,128,0.4); cursor: pointer;
+      min-width: 100px; flex: 1; max-width: 150px;
+      -webkit-appearance: none; appearance: none;
       transition: transform 0.05s ease;
     }
-    button:active { 
-      transform: scale(0.95); 
-      opacity: 0.9;
+    button:active { transform: scale(0.95); opacity: 0.9; }
+    button:disabled { opacity: 0.3; pointer-events: none; }
+    #logoImg {
+      position: absolute; top: 10px; left: 10px;
+      width: 30px; height: 30px; z-index: 50;
+      opacity: 1; filter: brightness(1.2);
     }
-    #logoImg { 
-      position: absolute; 
-      top: 10px; 
-      left: 10px; 
-      width: 30px;
-      height: 30px;
-      z-index: 50; 
-      opacity: 1;
-      filter: brightness(1.2);
+    .final-output {
+      position: absolute !important; width: 100% !important; height: 100% !important;
+      top: 0 !important; left: 0 !important; background: rgba(0,0,0,0.95);
+      display: none; justify-content: center; align-items: center; z-index: 999;
     }
-    .final-output { 
-      position: absolute !important; 
-      width: 100% !important; 
-      height: 100% !important; 
-      top: 0 !important; 
-      left: 0 !important; 
-      background: rgba(0,0,0,0.95); 
-      display: none; 
-      justify-content: center; 
-      align-items: center; 
-      z-index: 999; 
-    }
-    .audio-player {
-      display: none;
-    }
+    .audio-player { display: none; }
     #recordingVideoPlayer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #000;
-      display: none;
-      z-index: 1000;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: contain; background: #000; display: none; z-index: 1000;
     }
     .video-controls {
+      position: absolute; bottom: 10%; width: 100%; text-align: center;
+      z-index: 1001; display: flex; justify-content: center; gap: 10px;
+    }
+    .video-controls button { background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.3); }
+    canvas { display: none; }
+
+    .simple-controls {
+      display: flex; flex-direction: row; gap: 12px; width: 90%; max-width: 400px;
+      align-items: center; justify-content: center; background: rgba(0,0,0,0.8);
+      border-radius: 20px; padding: 15px 20px; flex-wrap: wrap;
+    }
+    .simple-controls button { flex: 1; min-width: 90px; max-width: 130px; margin: 0; font-size: 12px; }
+
+    .option-modal {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); display: none; justify-content: center;
+      align-items: center; z-index: 1002; backdrop-filter: blur(4px);
+    }
+    .option-modal .modal-content {
+      background: rgba(20,20,20,0.95); border-radius: 24px; padding: 20px;
+      width: 85%; max-width: 320px; text-align: center;
+      border: 1px solid #ff66cc; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+    .option-modal h3 { color: white; margin-bottom: 15px; font-size: 18px; }
+    .option-modal .option-row { display: flex; justify-content: space-between; gap: 10px; margin: 12px 0; }
+    .option-modal .option-row button,
+    .option-modal .option-row a button {
+      flex: 1; max-width: none;
+      background: linear-gradient(135deg, #ff3388, #ff88cc);
+      font-size: 11px; padding: 8px;
+    }
+    .close-modal { background: #666 !important; margin-top: 15px; box-shadow: none; }
+
+    /* =====================================================
+       CAMERA CONTAINER — key fix: overflow: hidden, no clip
+    ===================================================== */
+    .camera-container {
       position: absolute;
-      bottom: 10%;
+      top: 20px;
+      left: 20px;
+      /* default size: small portrait window */
+      width: 120px;
+      height: 213px;   /* 9:16 */
+      background: #000;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.85);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      z-index: 101;
+      display: none;
+      cursor: grab;
+      user-select: none;
+      /* IMPORTANT: overflow hidden so canvas fills container perfectly */
+      overflow: hidden;
+    }
+    .camera-container:active { cursor: grabbing; }
+    .camera-container.visible { display: block; }
+
+    /*
+      #previewCanvas fills the container exactly.
+      object-fit: contain is handled in JS drawing logic.
+      background stays black (letterbox/pillarbox areas).
+    */
+    #previewCanvas {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
-      text-align: center;
-      z-index: 1001;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      border-radius: 10px;
     }
-    .video-controls button {
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.3);
+
+    /* hidden raw video — only used as source for canvas drawing */
+    #rawVideo { display: none; }
+
+    .resize-handle {
+      position: absolute; bottom: -6px; right: -6px;
+      width: 22px; height: 22px; background: rgba(255,255,255,0.95);
+      border-radius: 50%; border: 1px solid #fff;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5); cursor: nwse-resize;
+      z-index: 102; pointer-events: auto; transition: transform 0.1s;
     }
-    canvas { 
-      display: none; 
-    }
+    .resize-handle:active { transform: scale(1.15); }
+
+    /* hidden canvases used for recording */
+    #mirrorCanvas, #recordingCanvas, #dummyCanvas { display: none; }
   </style>
 </head>
 <body>
-  <div class="karaoke-wrapper" id="karaokeWrapper">
-    <!-- Background image (Django template) -->
-    {% if song.lyrics_image %}
-    <img class="reel-bg" id="mainBg" src="{{ song.lyrics_image.url }}">
-    {% else %}
-    <img class="reel-bg" id="mainBg" src="/static/default_lyrics_bg.jpg">
-    {% endif %}
+<div class="karaoke-wrapper" id="karaokeWrapper">
+  {% if song.lyrics_image %}
+  <img class="reel-bg" id="mainBg" src="{{ song.lyrics_image.url }}">
+  {% else %}
+  <img class="reel-bg" id="mainBg" src="/static/default_lyrics_bg.jpg">
+  {% endif %}
 
-    <!-- Logo -->
-    <img id="logoImg" src="/media/logo/branks3_logo.png" onerror="this.style.display='none'">
+  <img id="logoImg" src="/media/logo/branks3_logo.png" onerror="this.style.display='none'">
+  <div id="status">Ready 🎤</div>
 
-    <!-- Status text -->
-    <div id="status">Ready 🎤</div>
+  <audio id="originalAudio" class="audio-player" preload="auto" src="{{ song.original_file.url }}"></audio>
+  <audio id="accompaniment" class="audio-player" preload="auto" src="{{ song.accompaniment_file.url }}"></audio>
 
-    <!-- Hidden audio elements (preload auto -> instant play) -->
-    <audio id="originalAudio" class="audio-player" preload="auto" src="{{ song.original_file.url }}"></audio>
-    <audio id="accompaniment" class="audio-player" preload="auto" src="{{ song.accompaniment_file.url }}"></audio>
-
-    <!-- Controls (same layout) -->
-    <div class="controls">
-      <button id="playBtn">▶ Play Original</button>
-      <button id="recordBtn">🎙 Start Recording</button>
-      <button id="stopBtn" style="display:none;">⏹ Stop Recording</button>
-    </div>
+  <div class="controls">
+    <button id="playBtn">▶ Play Original</button>
+    <button id="recordBtn">🎙 Start Recording</button>
+    <button id="stopBtn" style="display:none;">⏹ Stop Recording</button>
   </div>
 
-  <!-- Final output overlay (after recording) -->
-  <div class="final-output" id="finalOutputDiv">
-    <div class="karaoke-wrapper">
-      <img class="reel-bg" id="finalBg">
-      <div id="finalStatus">Recording Complete!</div>
-      <div class="controls">
-        <button id="playRecordingBtn">▶ Play</button>
-        <a id="downloadRecordingBtn" href="#" download>
-          <button>⬇ Download</button>
-        </a>
+  <!-- Camera floating window -->
+  <div class="camera-container" id="cameraContainer">
+    <!-- hidden raw video (source only) -->
+    <video id="rawVideo" playsinline autoplay muted></video>
+    <!-- preview canvas (what user sees — natural field of view) -->
+    <canvas id="previewCanvas"></canvas>
+    <div class="resize-handle" id="resizeHandle"></div>
+  </div>
+</div>
+
+<!-- Final output overlay -->
+<div class="final-output" id="finalOutputDiv">
+  <div class="karaoke-wrapper">
+    <img class="reel-bg" id="finalBg">
+    <div id="finalStatus">Recording Complete!</div>
+    <div class="controls" style="top: auto; bottom: 20%;">
+      <div class="simple-controls">
+        <button id="showPlayOptionsBtn">▶ Play</button>
+        <button id="showDownloadOptionsBtn">Download</button>
         <button id="newRecordingBtn">New</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Video player for playback -->
-  <video id="recordingVideoPlayer" playsinline controls></video>
-  <div class="video-controls" id="videoControls" style="display:none;">
-    <button onclick="window.closeVideoPlayer()">Close</button>
-    <button onclick="window.toggleFullscreen()">Fullscreen</button>
+<!-- Play modal -->
+<div id="playOptionsModal" class="option-modal">
+  <div class="modal-content">
+    <h3>▶ Play Options</h3>
+    <div class="option-row">
+      <button id="modalPlayMixNoFace">Mix (No Face)</button>
+      <button id="modalPlayMixWithFace">Mix (With Face)</button>
+    </div>
+    <div class="option-row">
+      <button id="modalPlayVoiceNoFace">Voice Only (No Face)</button>
+      <button id="modalPlayVoiceWithFace">Voice Only (With Face)</button>
+    </div>
+    <button class="close-modal" id="closePlayModal">Close</button>
   </div>
+</div>
 
-  <!-- Hidden canvas for recording (720x1280) -->
-  <canvas id="recordingCanvas" width="720" height="1280"></canvas>
+<!-- Download modal -->
+<div id="downloadOptionsModal" class="option-modal">
+  <div class="modal-content">
+    <h3>⬇ Download Options</h3>
+    <div class="option-row">
+      <a id="modalDownloadMixNoFace" href="#" download><button>Mix (No Face)</button></a>
+      <a id="modalDownloadMixWithFace" href="#" download><button>Mix (With Face)</button></a>
+    </div>
+    <div class="option-row">
+      <a id="modalDownloadVoiceNoFace" href="#" download><button>Voice Only (No Face)</button></a>
+      <a id="modalDownloadVoiceWithFace" href="#" download><button>Voice Only (With Face)</button></a>
+    </div>
+    <button class="close-modal" id="closeDownloadModal">Close</button>
+  </div>
+</div>
 
-  <script>
-  (function() {
-    "use strict";
+<video id="recordingVideoPlayer" playsinline controls></video>
+<div class="video-controls" id="videoControls" style="display:none;">
+  <button onclick="window.closeVideoPlayer()">Close</button>
+  <button onclick="window.toggleFullscreen()">Fullscreen</button>
+</div>
 
-    /* ---------- GLOBAL STATE (cleaned up, ready for instant action) ---------- */
-    let mediaRecorder;
-    let recordedChunks = [];
-    let lastRecordingURL = null;
-    let audioContext = null;
-    // Web Audio nodes for recording (mic + accompaniment element)
-    let micSource = null, accMediaSource = null, micGain = null, accGain = null, destination = null;
-    let canvasRafId = null;
-    let isRecording = false;
-    let isPlayingRecording = false;
-    let autoStopTimer = null;
-    let micStream = null;
-    let recordingStartTime = 0;
-    let recordingDuration = 0;
+<!--
+  recordingCanvas  = background (lyrics image) track — 720x1280
+  mirrorCanvas     = camera track (mirrored, natural view) — sized to actual camera output
+  dummyCanvas      = fallback if camera unavailable
+-->
+<canvas id="recordingCanvas" width="720" height="1280"></canvas>
+<canvas id="mirrorCanvas" width="720" height="1280"></canvas>
+<canvas id="dummyCanvas" width="720" height="1280"></canvas>
 
-    // Cached elements
-    const playBtn = document.getElementById("playBtn");
-    const recordBtn = document.getElementById("recordBtn");
-    const stopBtn = document.getElementById("stopBtn");
-    const statusEl = document.getElementById("status");
-    const originalAudioEl = document.getElementById("originalAudio");
-    const accompanimentEl = document.getElementById("accompaniment");
-    const finalDiv = document.getElementById("finalOutputDiv");
-    const mainBg = document.getElementById("mainBg");
-    const finalBg = document.getElementById("finalBg");
-    const finalStatus = document.getElementById("finalStatus");
-    const playRecordingBtn = document.getElementById("playRecordingBtn");
-    const downloadRecordingBtn = document.getElementById("downloadRecordingBtn");
-    const newRecordingBtn = document.getElementById("newRecordingBtn");
-    const canvas = document.getElementById("recordingCanvas");
-    const ctx = canvas.getContext("2d");
-    const logoImg = new Image();
-    logoImg.src = document.getElementById("logoImg").src;
-    const recordingVideoPlayer = document.getElementById("recordingVideoPlayer");
-    const videoControls = document.getElementById("videoControls");
+<script>
+(function () {
+  "use strict";
 
-    // ---------- HELPER: ensure AudioContext exists and is resumed ----------
-    async function resumeAudioContext() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)({
-          sampleRate: 48000,
-          latencyHint: 'playback'
-        });
-      }
-      if (audioContext.state === 'suspended') {
-        try { await audioContext.resume(); } catch (e) { console.warn('resume failed', e); }
-      }
-      return audioContext;
+  /* ─── State ─────────────────────────────────────────────── */
+  let mrMixNF, mrMixWF, mrVoiceNF, mrVoiceWF;
+  let chunksMixNF=[], chunksMixWF=[], chunksVoiceNF=[], chunksVoiceWF=[];
+  let urlMixNF=null, urlMixWF=null, urlVoiceNF=null, urlVoiceWF=null;
+
+  let audioCtx=null, accSrc=null;
+  let micSrc=null, micGain=null, accGain=null;
+  let mixDest=null, voiceDest=null;
+
+  let bgRafId=null, dummyRafId=null, camRafId=null;
+  let isRecording=false;
+  let autoStopTimer=null;
+  let micStream=null, camStream=null;
+  let recordStart=0;
+  let useDummy=false;
+
+  /* actual camera pixel dimensions (set after stream starts) */
+  let camW=0, camH=0;
+
+  /* ─── DOM ─────────────────────────────────────────────── */
+  const playBtn      = document.getElementById("playBtn");
+  const recordBtn    = document.getElementById("recordBtn");
+  const stopBtn      = document.getElementById("stopBtn");
+  const statusEl     = document.getElementById("status");
+  const origAudio    = document.getElementById("originalAudio");
+  const accomp       = document.getElementById("accompaniment");
+  const finalDiv     = document.getElementById("finalOutputDiv");
+  const mainBg       = document.getElementById("mainBg");
+  const finalBg      = document.getElementById("finalBg");
+  const finalStatus  = document.getElementById("finalStatus");
+  const newRecBtn    = document.getElementById("newRecordingBtn");
+
+  const bgCanvas     = document.getElementById("recordingCanvas");
+  const mirCanvas    = document.getElementById("mirrorCanvas");
+  const dummyCanvas  = document.getElementById("dummyCanvas");
+  const bgCtx        = bgCanvas.getContext("2d");
+  const mirCtx       = mirCanvas.getContext("2d");
+  const dummyCtx     = dummyCanvas.getContext("2d");
+
+  const logoImg      = new Image();
+  logoImg.src        = document.getElementById("logoImg").src;
+
+  const vidPlayer    = document.getElementById("recordingVideoPlayer");
+  const vidControls  = document.getElementById("videoControls");
+  const camContainer = document.getElementById("cameraContainer");
+  const rawVideo     = document.getElementById("rawVideo");
+  const previewCv    = document.getElementById("previewCanvas");
+  const resizeHandle = document.getElementById("resizeHandle");
+
+  const showPlayBtn  = document.getElementById("showPlayOptionsBtn");
+  const showDlBtn    = document.getElementById("showDownloadOptionsBtn");
+  const playModal    = document.getElementById("playOptionsModal");
+  const dlModal      = document.getElementById("downloadOptionsModal");
+  const closePlay    = document.getElementById("closePlayModal");
+  const closeDl      = document.getElementById("closeDownloadModal");
+
+  const mpMixNF   = document.getElementById("modalPlayMixNoFace");
+  const mpMixWF   = document.getElementById("modalPlayMixWithFace");
+  const mpVoiceNF = document.getElementById("modalPlayVoiceNoFace");
+  const mpVoiceWF = document.getElementById("modalPlayVoiceWithFace");
+  const mdMixNF   = document.getElementById("modalDownloadMixNoFace");
+  const mdMixWF   = document.getElementById("modalDownloadMixWithFace");
+  const mdVoiceNF = document.getElementById("modalDownloadVoiceNoFace");
+  const mdVoiceWF = document.getElementById("modalDownloadVoiceWithFace");
+
+  /* ─── Drag ───────────────────────────────────────────── */
+  let dragging=false, dsx=0, dsy=0, sl=0, st=0;
+  function dragStart(e){
+    if(e.target===resizeHandle) return;
+    e.preventDefault(); dragging=true;
+    const r=camContainer.getBoundingClientRect(); sl=r.left; st=r.top;
+    const p=e.touches?e.touches[0]:e; dsx=p.clientX; dsy=p.clientY;
+    window.addEventListener('mousemove',dragMove); window.addEventListener('mouseup',dragEnd);
+    window.addEventListener('touchmove',dragMove,{passive:false}); window.addEventListener('touchend',dragEnd);
+  }
+  function dragMove(e){
+    if(!dragging) return; e.preventDefault();
+    const p=e.touches?e.touches[0]:e;
+    const nl=Math.min(Math.max(0, sl+(p.clientX-dsx)), window.innerWidth-camContainer.offsetWidth);
+    const nt=Math.min(Math.max(0, st+(p.clientY-dsy)), window.innerHeight-camContainer.offsetHeight);
+    camContainer.style.left=nl+'px'; camContainer.style.top=nt+'px';
+  }
+  function dragEnd(){
+    dragging=false;
+    window.removeEventListener('mousemove',dragMove); window.removeEventListener('mouseup',dragEnd);
+    window.removeEventListener('touchmove',dragMove); window.removeEventListener('touchend',dragEnd);
+  }
+  camContainer.addEventListener('mousedown',dragStart);
+  camContainer.addEventListener('touchstart',dragStart,{passive:false});
+
+  /* ─── Resize (keep 9:16 aspect) ─────────────────────── */
+  let resizing=false, rsx=0, rsy=0, rw0=0;
+  function resizeStart(e){
+    e.preventDefault(); e.stopPropagation(); resizing=true;
+    rw0=camContainer.offsetWidth;
+    const p=e.touches?e.touches[0]:e; rsx=p.clientX; rsy=p.clientY;
+    window.addEventListener('mousemove',resizeMove); window.addEventListener('mouseup',resizeEnd);
+    window.addEventListener('touchmove',resizeMove,{passive:false}); window.addEventListener('touchend',resizeEnd);
+  }
+  function resizeMove(e){
+    if(!resizing) return; e.preventDefault();
+    const p=e.touches?e.touches[0]:e;
+    const delta=Math.max(p.clientX-rsx, p.clientY-rsy);
+    const nw=Math.min(Math.max(80, rw0+delta), Math.min(300, window.innerWidth-40));
+    camContainer.style.width=nw+'px';
+    camContainer.style.height=(nw*16/9)+'px';
+  }
+  function resizeEnd(){
+    resizing=false;
+    window.removeEventListener('mousemove',resizeMove); window.removeEventListener('mouseup',resizeEnd);
+    window.removeEventListener('touchmove',resizeMove); window.removeEventListener('touchend',resizeEnd);
+  }
+  resizeHandle.addEventListener('mousedown',resizeStart);
+  resizeHandle.addEventListener('touchstart',resizeStart,{passive:false});
+
+  /* ─── Pinch zoom ─────────────────────────────────────── */
+  let pinchD0=0, pinchW0=0;
+  camContainer.addEventListener('touchstart',e=>{
+    if(e.touches.length===2){
+      pinchD0=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      pinchW0=camContainer.offsetWidth; e.preventDefault();
     }
-
-    // ---------- DRAW CANVAS (exactly as before) ----------
-    function drawCanvas() {
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const canvasW = canvas.width;
-      const canvasH = canvas.height * 0.75;   // image occupies 75% height
-
-      const imgRatio = mainBg.naturalWidth / mainBg.naturalHeight;
-      const canvasRatio = canvasW / canvasH;
-
-      let drawW, drawH;
-      if (imgRatio > canvasRatio) {
-        drawW = canvasW;
-        drawH = canvasW / imgRatio;
-      } else {
-        drawH = canvasH;
-        drawW = canvasH * imgRatio;
-      }
-
-      const x = (canvasW - drawW) / 2;
-      const y = 0;  // top aligned
-
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(mainBg, x, y, drawW, drawH);
-
-      // logo top-left
-      const logoSize = 60;
-      ctx.drawImage(logoImg, 20, 20, logoSize, logoSize);
-
-      canvasRafId = requestAnimationFrame(drawCanvas);
+  });
+  camContainer.addEventListener('touchmove',e=>{
+    if(e.touches.length===2&&pinchD0>0){
+      const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      const nw=Math.min(Math.max(80, pinchW0*d/pinchD0), Math.min(300, window.innerWidth-40));
+      camContainer.style.width=nw+'px'; camContainer.style.height=(nw*16/9)+'px';
+      e.preventDefault();
     }
+  });
+  camContainer.addEventListener('touchend',()=>{ pinchD0=0; });
 
-    // ---------- CLEANUP after recording ----------
-    function cleanupRecordingNodes() {
-      if (accMediaSource) {
-        try { accMediaSource.disconnect(); } catch (e) {}
-        accMediaSource = null;
-      }
-      if (micSource) {
-        try { micSource.disconnect(); } catch (e) {}
-        micSource = null;
-      }
-      if (micGain) {
-        try { micGain.disconnect(); } catch (e) {}
-        micGain = null;
-      }
-      if (accGain) {
-        try { accGain.disconnect(); } catch (e) {}
-        accGain = null;
-      }
-      if (destination) {
-        try { destination.disconnect(); } catch (e) {}
-        destination = null;
-      }
-      if (micStream) {
-        micStream.getTracks().forEach(t => t.stop());
-        micStream = null;
-      }
-      // stop accompaniment element (it was playing for recording)
-      accompanimentEl.pause();
-      accompanimentEl.currentTime = 0;
+  /* ─── Audio context ──────────────────────────────────── */
+  async function resumeAudioCtx(){
+    if(!audioCtx){
+      audioCtx=new (window.AudioContext||window.webkitAudioContext)({sampleRate:48000,latencyHint:'playback'});
+      accSrc=audioCtx.createMediaElementSource(accomp);
     }
+    if(audioCtx.state==='suspended') try{ await audioCtx.resume(); }catch(e){}
+    return audioCtx;
+  }
 
-    // ---------- STOP RECORDING (manual or auto) ----------
-    function stopRecording() {
-      if (!isRecording) return;
-      if (autoStopTimer) {
-        clearTimeout(autoStopTimer);
-        autoStopTimer = null;
+  /* ─── Background canvas draw loop ───────────────────── */
+  function drawBg(){
+    bgCtx.fillStyle='#000';
+    bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+    const cw=bgCanvas.width, ch=bgCanvas.height*0.75;
+    const ir=mainBg.naturalWidth/mainBg.naturalHeight;
+    const cr=cw/ch;
+    let dw,dh;
+    if(ir>cr){dw=cw;dh=cw/ir;}else{dh=ch;dw=ch*ir;}
+    bgCtx.drawImage(mainBg,(cw-dw)/2,0,dw,dh);
+    if(logoImg.complete&&logoImg.naturalWidth>0) bgCtx.drawImage(logoImg,20,20,60,60);
+    bgRafId=requestAnimationFrame(drawBg);
+  }
+
+  function drawDummy(){
+    dummyCtx.fillStyle='#000';
+    dummyCtx.fillRect(0,0,dummyCanvas.width,dummyCanvas.height);
+    dummyCtx.fillStyle='#444'; dummyCtx.font='30px sans-serif';
+    dummyCtx.textAlign='center';
+    dummyCtx.fillText('Camera Unavailable',dummyCanvas.width/2,dummyCanvas.height/2);
+    dummyRafId=requestAnimationFrame(drawDummy);
+  }
+
+  /* ══════════════════════════════════════════════════════
+     CAMERA DRAW LOOP — THE CORE FIX
+     
+     Problem in old code:
+       mirrorCanvas was 720x1280 but camera video was maybe
+       480x640. Drawing video into wrong-sized canvas caused
+       extreme zoom/crop.
+     
+     Fix:
+       1. After stream starts, read actual videoWidth/videoHeight
+       2. Set mirrorCanvas to EXACTLY those dimensions
+       3. Draw with CONTAIN mode (letterbox) — no crop, no zoom
+       4. Mirror horizontally (selfie mode)
+       5. Preview canvas also uses contain mode
+  ══════════════════════════════════════════════════════ */
+  function startCameraLoop(){
+    if(camRafId){ cancelAnimationFrame(camRafId); camRafId=null; }
+
+    function loop(){
+      if(!rawVideo||rawVideo.readyState<2){
+        camRafId=requestAnimationFrame(loop); return;
       }
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();   // triggers onstop event
-      }
-      // stop monitoring original (guide) audio
-      originalAudioEl.pause();
-      originalAudioEl.currentTime = 0;
 
-      cleanupRecordingNodes();
-
-      if (canvasRafId) {
-        cancelAnimationFrame(canvasRafId);
-        canvasRafId = null;
-      }
-      isRecording = false;
-      statusEl.innerText = "Processing recording...";
-    }
-
-    // ---------- PLAY ORIGINAL (INSTANT via <audio> element) ----------
-    playBtn.onclick = async function() {
-      // If recording is active, stop it first
-      if (isRecording) stopRecording();
-
-      if (!originalAudioEl.paused) {
-        // Already playing -> pause
-        originalAudioEl.pause();
-        originalAudioEl.currentTime = 0;
-        playBtn.innerText = "▶ Play Original";
-        statusEl.innerText = "⏹ Stopped";
-      } else {
-        // Play original (immediate, preload done)
-        try {
-          await originalAudioEl.play();
-          playBtn.innerText = "⏹ Stop Original";
-          statusEl.innerText = "🎵 Playing original...";
-        } catch (e) {
-          statusEl.innerText = "❌ play failed";
-          console.warn(e);
+      /* ── Step 1: sync mirrorCanvas to actual video size ── */
+      const vw=rawVideo.videoWidth, vh=rawVideo.videoHeight;
+      if(vw>0&&vh>0){
+        if(mirCanvas.width!==vw||mirCanvas.height!==vh){
+          mirCanvas.width=vw; mirCanvas.height=vh;
+          camW=vw; camH=vh;
         }
       }
-    };
 
-    /* ---------- RECORD BUTTON — now uses accompanimentEl (preloaded) for instant mix ---------- */
-    recordBtn.onclick = async function() {
-      if (isRecording) return;
+      /* ── Step 2: draw video MIRRORED + CONTAIN (no crop) ── */
+      mirCtx.clearRect(0,0,mirCanvas.width,mirCanvas.height);
 
-      // Stop any playing original
-      if (!originalAudioEl.paused) {
-        originalAudioEl.pause();
-        originalAudioEl.currentTime = 0;
-        playBtn.innerText = "▶ Play Original";
-      }
+      // mirrorCanvas is same size as video → just flip horizontally
+      // This means NO crop, NO zoom, FULL frame visible (same as phone camera app)
+      mirCtx.save();
+      mirCtx.scale(-1,1);
+      mirCtx.drawImage(rawVideo,-mirCanvas.width,0,mirCanvas.width,mirCanvas.height);
+      mirCtx.restore();
 
-      // Hide play/record, show stop
-      playBtn.style.display = "none";
-      recordBtn.style.display = "none";
-      stopBtn.style.display = "inline-block";
-      statusEl.innerText = "🎙 Starting (mic) ...";
+      /* ── Step 3: update floating preview window ── */
+      if(camContainer.classList.contains('visible')){
+        const pw=camContainer.offsetWidth;
+        const ph=camContainer.offsetHeight;
+        if(pw>0&&ph>0){
+          previewCv.width=pw;
+          previewCv.height=ph;
+          const pvCtx=previewCv.getContext('2d');
+          pvCtx.fillStyle='#000';
+          pvCtx.fillRect(0,0,pw,ph);
 
-      try {
-        // 1. Resume audio context (fast)
-        await resumeAudioContext();
-
-        // 2. Get microphone (fast with minimal constraints)
-        micStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: false,
-            noiseSuppression: true,
-            autoGainControl: false,
-            channelCount: 1,
-            sampleRate: 48000
-          },
-          video: false
-        });
-
-        // 3. Build Web Audio graph using accompaniment <audio> element (already preloaded)
-        //    and mic. This does NOT require decoding buffers.
-        micSource = audioContext.createMediaStreamSource(micStream);
-
-        // IMPORTANT: create MediaElementSource from accompanimentEl (karaoke track)
-        // This will allow us to mix it into the recording.
-        accMediaSource = audioContext.createMediaElementSource(accompanimentEl);
-
-        micGain = audioContext.createGain();
-        micGain.gain.value = 1.5;   // voice boost
-        accGain = audioContext.createGain();
-        accGain.gain.value = 0.8;   // accompaniment level
-
-        destination = audioContext.createMediaStreamDestination();
-
-        micSource.connect(micGain);
-        micGain.connect(destination);
-        accMediaSource.connect(accGain);
-        accGain.connect(destination);
-
-        // 4. Start canvas drawing
-        drawCanvas();
-
-        // 5. Play the accompaniment (karaoke) track – it will be heard and also fed into destination
-        //    Also play the original (guide) for singer monitoring (not recorded)
-        await Promise.all([
-          accompanimentEl.play(),    // karaoke track (recorded)
-          originalAudioEl.play()     // guide vocals (not recorded, only for singer)
-        ]).catch(e => console.warn('playback start issue:', e));
-
-        // 6. Capture canvas + mixed audio
-        const canvasStream = canvas.captureStream(30);
-        const audioStream = destination.stream;
-        const combinedStream = new MediaStream([
-          ...canvasStream.getVideoTracks(),
-          ...audioStream.getAudioTracks()
-        ]);
-
-        // 7. Determine best mime type
-        let mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
-        if (!MediaRecorder.isTypeSupported(mimeType)) {
-          mimeType = 'video/webm;codecs=vp9,opus';
-        }
-        if (!MediaRecorder.isTypeSupported(mimeType)) {
-          mimeType = 'video/webm;codecs=vp8,opus';
-        }
-        if (!MediaRecorder.isTypeSupported(mimeType)) {
-          mimeType = 'video/webm';
-        }
-
-        mediaRecorder = new MediaRecorder(combinedStream, {
-          mimeType: mimeType,
-          audioBitsPerSecond: 256000,
-          videoBitsPerSecond: 5000000
-        });
-
-        recordedChunks = [];
-        recordingStartTime = Date.now();
-
-        mediaRecorder.ondataavailable = e => {
-          if (e.data.size > 0) recordedChunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-          // cancel canvas
-          if (canvasRafId) {
-            cancelAnimationFrame(canvasRafId);
-            canvasRafId = null;
+          // CONTAIN: fit whole frame inside preview box (letterbox/pillarbox)
+          const srcAspect=mirCanvas.width/mirCanvas.height;
+          const dstAspect=pw/ph;
+          let dw,dh,dx,dy;
+          if(srcAspect>dstAspect){
+            // source wider → fit width
+            dw=pw; dh=pw/srcAspect; dx=0; dy=(ph-dh)/2;
+          } else {
+            // source taller → fit height
+            dh=ph; dw=ph*srcAspect; dx=(pw-dw)/2; dy=0;
           }
+          pvCtx.drawImage(mirCanvas,0,0,mirCanvas.width,mirCanvas.height,dx,dy,dw,dh);
+        }
+      }
 
-          recordingDuration = (Date.now() - recordingStartTime) / 1000;
+      camRafId=requestAnimationFrame(loop);
+    }
+    loop();
+  }
 
-          // stop monitoring & accompaniment
-          originalAudioEl.pause();
-          originalAudioEl.currentTime = 0;
-          accompanimentEl.pause();
-          accompanimentEl.currentTime = 0;
+  /* ─── Wait for video to have real dimensions ─────────── */
+  function waitForVideo(vid){
+    return new Promise(resolve=>{
+      if(vid.readyState>=2&&vid.videoWidth>0&&vid.videoHeight>0){resolve();return;}
+      function onReady(){
+        vid.removeEventListener('canplay',onReady);
+        vid.removeEventListener('playing',onReady);
+        resolve();
+      }
+      vid.addEventListener('canplay',onReady);
+      vid.addEventListener('playing',onReady);
+      setTimeout(resolve,3000);
+    });
+  }
 
-          cleanupRecordingNodes();
+  /* ─── Cleanup ────────────────────────────────────────── */
+  function cleanup(){
+    if(micSrc){try{micSrc.disconnect();}catch(e){} micSrc=null;}
+    if(micGain){try{micGain.disconnect();}catch(e){} micGain=null;}
+    if(accGain){try{accGain.disconnect();}catch(e){} accGain=null;}
+    if(mixDest){try{mixDest.disconnect();}catch(e){} mixDest=null;}
+    if(voiceDest){try{voiceDest.disconnect();}catch(e){} voiceDest=null;}
+    if(micStream){micStream.getTracks().forEach(t=>t.stop()); micStream=null;}
+    if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null; rawVideo.srcObject=null;}
+    if(camRafId){cancelAnimationFrame(camRafId); camRafId=null;}
+    accomp.pause(); accomp.currentTime=0;
+  }
 
-          if (recordedChunks.length > 0) {
-            const blob = new Blob(recordedChunks, { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            if (lastRecordingURL) URL.revokeObjectURL(lastRecordingURL);
-            lastRecordingURL = url;
+  /* ─── Stop recording ─────────────────────────────────── */
+  function stopRecording(){
+    if(!isRecording) return;
+    if(autoStopTimer){clearTimeout(autoStopTimer); autoStopTimer=null;}
+    [mrMixNF,mrMixWF,mrVoiceNF,mrVoiceWF].forEach(r=>{
+      if(r&&r.state!=='inactive') r.stop();
+    });
+    origAudio.pause(); origAudio.currentTime=0;
+    cleanup();
+    if(bgRafId){cancelAnimationFrame(bgRafId); bgRafId=null;}
+    if(dummyRafId){cancelAnimationFrame(dummyRafId); dummyRafId=null;}
+    camContainer.classList.remove('visible');
+    isRecording=false;
+    statusEl.innerText='Processing...';
+  }
 
-            finalBg.src = mainBg.src;
-            finalDiv.style.display = "flex";
+  /* ─── On all recorders stopped ───────────────────────── */
+  let stoppedCount=0;
+  function onStop(){
+    stoppedCount++;
+    if(stoppedCount<4) return;
 
-            const mins = Math.floor(recordingDuration / 60);
-            const secs = Math.floor(recordingDuration % 60);
-            finalStatus.innerText = `✅ Complete (${mins}:${secs.toString().padStart(2,'0')})`;
+    const dur=(Date.now()-recordStart)/1000;
+    finalBg.src=mainBg.src;
+    finalDiv.style.display='flex';
+    finalStatus.innerText=`✅ Complete (${Math.floor(dur/60)}:${String(Math.floor(dur%60)).padStart(2,'0')})`;
 
-            let songName = "{{ song.title|default:'karaoke' }}".replace(/[^a-zA-Z0-9]/g, '_');
-            let ext = mimeType.includes('mp4') ? '_KARAOKE.mp4' : '_KARAOKE.webm';
-            downloadRecordingBtn.href = url;
-            downloadRecordingBtn.download = songName + ext;
+    function mkBlob(chunks,rec,dlEl,playCb,suffix){
+      if(!chunks.length) return null;
+      const blob=new Blob(chunks,{type:rec.mimeType});
+      const url=URL.createObjectURL(blob);
+      const song="{{ song.title|default:'karaoke' }}".replace(/[^a-zA-Z0-9]/g,'_');
+      const ext=rec.mimeType.includes('mp4')?'.mp4':'.webm';
+      dlEl.href=url; dlEl.download=song+suffix+ext;
+      playCb(url); return url;
+    }
 
-            // Play button inside final screen
-            playRecordingBtn.onclick = () => {
-              if (!isPlayingRecording) {
-                recordingVideoPlayer.src = url;
-                recordingVideoPlayer.style.display = 'block';
-                videoControls.style.display = 'flex';
-                finalDiv.style.display = 'none';
-                recordingVideoPlayer.play();
-                playRecordingBtn.innerText = "⏹ Stop";
-                isPlayingRecording = true;
+    if(urlMixNF) URL.revokeObjectURL(urlMixNF);
+    if(urlMixWF) URL.revokeObjectURL(urlMixWF);
+    if(urlVoiceNF) URL.revokeObjectURL(urlVoiceNF);
+    if(urlVoiceWF) URL.revokeObjectURL(urlVoiceWF);
 
-                recordingVideoPlayer.onended = () => {
-                  closeVideoPlayer();
-                  playRecordingBtn.innerText = "▶ Play";
-                  isPlayingRecording = false;
-                };
-              } else {
-                closeVideoPlayer();
-                playRecordingBtn.innerText = "▶ Play";
-                isPlayingRecording = false;
-              }
-            };
+    urlMixNF   = mkBlob(chunksMixNF,  mrMixNF,   mdMixNF,   u=>{mpMixNF.onclick=()=>playVid(u);},   '_mix_noface');
+    urlMixWF   = mkBlob(chunksMixWF,  mrMixWF,   mdMixWF,   u=>{mpMixWF.onclick=()=>playVid(u);},   '_mix_withface');
+    urlVoiceNF = mkBlob(chunksVoiceNF,mrVoiceNF, mdVoiceNF, u=>{mpVoiceNF.onclick=()=>playVid(u);}, '_voice_noface');
+    urlVoiceWF = mkBlob(chunksVoiceWF,mrVoiceWF, mdVoiceWF, u=>{mpVoiceWF.onclick=()=>playVid(u);}, '_voice_withface');
+
+    playBtn.style.display='inline-block';
+    recordBtn.style.display='inline-block';
+    stopBtn.style.display='none';
+    statusEl.innerText='Ready 🎤';
+    stoppedCount=0;
+  }
+
+  function playVid(url){
+    vidPlayer.src=url;
+    vidPlayer.style.display='block';
+    vidControls.style.display='flex';
+    finalDiv.style.display='none';
+    playModal.style.display='none';
+    dlModal.style.display='none';
+    vidPlayer.play().catch(e=>console.warn(e));
+  }
+
+  /* ─── Play original ──────────────────────────────────── */
+  playBtn.onclick=async function(){
+    if(isRecording) stopRecording();
+    if(!origAudio.paused){
+      origAudio.pause(); origAudio.currentTime=0;
+      playBtn.innerText='▶ Play Original'; statusEl.innerText='⏹ Stopped';
+    } else {
+      try{ await origAudio.play(); playBtn.innerText='⏹ Stop Original'; statusEl.innerText='🎵 Playing...'; }
+      catch(e){ statusEl.innerText='❌ play failed'; }
+    }
+  };
+
+  /* ─── Modals ─────────────────────────────────────────── */
+  showPlayBtn.onclick=()=>{playModal.style.display='flex';};
+  showDlBtn.onclick=()=>{dlModal.style.display='flex';};
+  closePlay.onclick=()=>{playModal.style.display='none';};
+  closeDl.onclick=()=>{dlModal.style.display='none';};
+  playModal.onclick=e=>{if(e.target===playModal)playModal.style.display='none';};
+  dlModal.onclick=e=>{if(e.target===dlModal)dlModal.style.display='none';};
+
+  /* ─── MIME type ──────────────────────────────────────── */
+  function bestMime(){
+    return [
+      'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+      'video/mp4;codecs=avc1.4D401E,mp4a.40.2',
+      'video/mp4',
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm'
+    ].find(m=>MediaRecorder.isTypeSupported(m))||'';
+  }
+
+  /* ══════════════════════════════════════════════════════
+     RECORD BUTTON
+     Camera constraint fix summary:
+       OLD: width:480, height:640 → landscape request on portrait
+            camera → zoom/crop
+       NEW: facingMode:"user" only, let browser pick native size.
+            After stream starts we read actual videoWidth/Height
+            and set mirrorCanvas to match exactly → no zoom.
+  ══════════════════════════════════════════════════════ */
+  recordBtn.onclick=async function(){
+    if(isRecording) return;
+    if(!origAudio.paused){origAudio.pause();origAudio.currentTime=0;playBtn.innerText='▶ Play Original';}
+    playBtn.style.display='none';
+    recordBtn.style.display='none';
+    stopBtn.style.display='inline-block';
+    statusEl.innerText='🎙 Starting...';
+
+    try{
+      await resumeAudioCtx();
+
+      /* ── Microphone ── */
+      micStream=await navigator.mediaDevices.getUserMedia({
+        audio:{echoCancellation:false,noiseSuppression:true,autoGainControl:true,channelCount:1,sampleRate:48000},
+        video:false
+      });
+
+      /* ── Camera — LET BROWSER PICK NATIVE SIZE ──
+         Do NOT force width/height. Front camera will open at
+         its natural resolution (e.g. 640x480 or 480x640).
+         We read actual dims after stream opens → set canvas
+         to match → NO zoom, NO crop.
+      */
+      useDummy=false;
+      let cameraOk=false;
+
+      try{
+        // First try: facingMode user, NO size constraint
+        camStream=await navigator.mediaDevices.getUserMedia({
+          video:{ facingMode:'user' },
+          audio:false
+        }).catch(()=>null);
+
+        // Fallback: any video
+        if(!camStream){
+          camStream=await navigator.mediaDevices.getUserMedia({
+            video:true, audio:false
+          }).catch(()=>null);
+        }
+
+        if(camStream){
+          rawVideo.srcObject=camStream;
+          rawVideo.muted=true;
+          await Promise.race([rawVideo.play(), new Promise(r=>setTimeout(r,3000))]).catch(()=>{});
+          await waitForVideo(rawVideo);
+
+          const vw=rawVideo.videoWidth, vh=rawVideo.videoHeight;
+          if(vw>0&&vh>0){
+            camW=vw; camH=vh;
+            /* Set mirrorCanvas to EXACT video size — this is the key fix */
+            mirCanvas.width=vw; mirCanvas.height=vh;
+            console.log('Camera native size:',vw,'x',vh);
+            startCameraLoop();
+            camContainer.classList.add('visible');
+            cameraOk=true;
+          } else {
+            throw new Error('Camera 0x0');
           }
-
-          // restore main UI
-          playBtn.style.display = "inline-block";
-          recordBtn.style.display = "inline-block";
-          stopBtn.style.display = "none";
-          statusEl.innerText = "Ready 🎤";
-          isRecording = false;
-        };
-
-        // start recorder (collect every second)
-        mediaRecorder.start(1000);
-        isRecording = true;
-        statusEl.innerText = "🎙 Recording...";
-
-        // Auto-stop based on accompaniment duration (if metadata loaded, else fallback)
-        let durationSec = accompanimentEl.duration;
-        if (!isFinite(durationSec) || durationSec <= 0) durationSec = 300; // max 5 min fallback
-        const durationMs = (durationSec * 1000) + 500;
-        autoStopTimer = setTimeout(() => {
-          if (isRecording) {
-            stopRecording();
-            statusEl.innerText = "⏹ Auto-stopped";
-          }
-        }, durationMs);
-
-      } catch (err) {
-        console.error("Recording error:", err);
-        statusEl.innerText = "❌ " + (err.message || "mic error");
-        // revert UI
-        playBtn.style.display = "inline-block";
-        recordBtn.style.display = "inline-block";
-        stopBtn.style.display = "none";
-        isRecording = false;
-        cleanupRecordingNodes();
-      }
-    };
-
-    /* ---------- STOP button (manual) ---------- */
-    stopBtn.onclick = function() {
-      stopRecording();
-      statusEl.innerText = "⏹ Stopped recording";
-    };
-
-    /* ---------- NEW RECORDING button (final screen) ---------- */
-    newRecordingBtn.onclick = function() {
-      closeVideoPlayer();  // defined below
-      finalDiv.style.display = "none";
-
-      // stop any playing original
-      if (!originalAudioEl.paused) {
-        originalAudioEl.pause();
-        originalAudioEl.currentTime = 0;
-      }
-      accompanimentEl.pause();
-      accompanimentEl.currentTime = 0;
-
-      playBtn.style.display = "inline-block";
-      playBtn.innerText = "▶ Play Original";
-      recordBtn.style.display = "inline-block";
-      stopBtn.style.display = "none";
-      statusEl.innerText = "Ready 🎤";
-
-      recordedChunks = [];
-      isRecording = false;
-      isPlayingRecording = false;
-
-      if (lastRecordingURL) {
-        URL.revokeObjectURL(lastRecordingURL);
-        lastRecordingURL = null;
+        } else {
+          throw new Error('No camera stream');
+        }
+      } catch(ce){
+        console.warn('Camera failed:',ce);
+        camStream=null; useDummy=true;
+        drawDummy();
+        camContainer.classList.remove('visible');
       }
 
-      // ensure audio context ready for next recording
-      resumeAudioContext();
-    };
-
-    /* ---------- VIDEO PLAYER controls (global for onclick) ---------- */
-    window.closeVideoPlayer = function() {
-      if (recordingVideoPlayer) {
-        recordingVideoPlayer.pause();
-        recordingVideoPlayer.currentTime = 0;
-        recordingVideoPlayer.style.display = 'none';
-        videoControls.style.display = 'none';
-        recordingVideoPlayer.src = '';
+      /* ── Countdown ── */
+      if(cameraOk){
+        for(let i=3;i>0;i--){
+          statusEl.innerText=`🎥 Starting in ${i}...`;
+          await new Promise(r=>setTimeout(r,1000));
+        }
       }
-      finalDiv.style.display = 'flex';
-      playRecordingBtn.innerText = "▶ Play";
-      isPlayingRecording = false;
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      }
-    };
 
-    window.toggleFullscreen = function() {
-      if (!document.fullscreenElement) {
-        recordingVideoPlayer.requestFullscreen().catch(e => console.log(e));
-      } else {
-        document.exitFullscreen();
-      }
-    };
+      /* ── Audio graph ── */
+      micSrc=audioCtx.createMediaStreamSource(micStream);
+      micGain=audioCtx.createGain(); micGain.gain.value=1.8;
+      accGain=audioCtx.createGain(); accGain.gain.value=0.85;
+      mixDest=audioCtx.createMediaStreamDestination();
+      voiceDest=audioCtx.createMediaStreamDestination();
+      micSrc.connect(micGain);
+      micGain.connect(mixDest);
+      micGain.connect(voiceDest);
+      accSrc.connect(accGain);
+      accGain.connect(mixDest);
 
-    // video tap toggle play/pause
-    recordingVideoPlayer.addEventListener('click', function() {
-      if (this.paused) this.play(); else this.pause();
-    });
+      drawBg();
 
-    /* ---------- PRELOAD & INIT: resume context early (just in case) ---------- */
-    window.addEventListener('load', async () => {
-      // resume audio context (will be suspended, but preloads buffers via elements)
-      await resumeAudioContext();
-      statusEl.innerText = "Ready 🎤 — tap buttons";
-    });
+      await Promise.all([accomp.play(),origAudio.play()]).catch(e=>console.warn(e));
 
-    // any touch will resume (failsafe)
-    document.addEventListener('touchstart', async () => {
-      await resumeAudioContext();
-    }, { once: true });
+      const aMix=mixDest.stream.getAudioTracks()[0];
+      const aVoice=voiceDest.stream.getAudioTracks()[0];
 
-    // clean up
-    window.addEventListener('beforeunload', () => {
-      if (lastRecordingURL) URL.revokeObjectURL(lastRecordingURL);
-      if (audioContext) audioContext.close();
-      if (micStream) micStream.getTracks().forEach(t => t.stop());
-    });
+      /* FPS: iOS gets 15, others 25 */
+      const fps=/iPhone|iPad|iPod/.test(navigator.userAgent)?15:25;
 
-    window.addEventListener('pagehide', () => {
-      if (canvasRafId) cancelAnimationFrame(canvasRafId);
-    });
+      const vBg=bgCanvas.captureStream(fps).getVideoTracks()[0];
+      const vFace=cameraOk
+        ? mirCanvas.captureStream(fps).getVideoTracks()[0]
+        : dummyCanvas.captureStream(fps).getVideoTracks()[0];
 
-  })();
-  </script>
+      const sMixNF   =new MediaStream([vBg,   aMix.clone()]);
+      const sMixWF   =new MediaStream([vFace,  aMix.clone()]);
+      const sVoiceNF =new MediaStream([vBg,   aVoice.clone()]);
+      const sVoiceWF =new MediaStream([vFace,  aVoice.clone()]);
+
+      const mime=bestMime();
+      const opts={mimeType:mime, audioBitsPerSecond:192000, videoBitsPerSecond:4000000};
+
+      chunksMixNF=[]; chunksMixWF=[]; chunksVoiceNF=[]; chunksVoiceWF=[];
+      stoppedCount=0;
+
+      mrMixNF   =new MediaRecorder(sMixNF,   opts);
+      mrMixWF   =new MediaRecorder(sMixWF,   opts);
+      mrVoiceNF =new MediaRecorder(sVoiceNF, opts);
+      mrVoiceWF =new MediaRecorder(sVoiceWF, opts);
+
+      mrMixNF.ondataavailable   =e=>{if(e.data.size>0)chunksMixNF.push(e.data);};
+      mrMixWF.ondataavailable   =e=>{if(e.data.size>0)chunksMixWF.push(e.data);};
+      mrVoiceNF.ondataavailable =e=>{if(e.data.size>0)chunksVoiceNF.push(e.data);};
+      mrVoiceWF.ondataavailable =e=>{if(e.data.size>0)chunksVoiceWF.push(e.data);};
+
+      mrMixNF.onstop=mrMixWF.onstop=mrVoiceNF.onstop=mrVoiceWF.onstop=onStop;
+
+      recordStart=Date.now();
+      mrMixNF.start(2000); mrMixWF.start(2000);
+      mrVoiceNF.start(2000); mrVoiceWF.start(2000);
+
+      isRecording=true;
+      statusEl.innerText='🎙 Recording...';
+
+      let dur=accomp.duration;
+      if(!isFinite(dur)||dur<=0) dur=300;
+      autoStopTimer=setTimeout(()=>{
+        if(isRecording){stopRecording();statusEl.innerText='⏹ Auto-stopped';}
+      },(dur*1000)+500);
+
+    } catch(err){
+      console.error(err);
+      statusEl.innerText='❌ '+(err.message||'Error');
+      playBtn.style.display='inline-block';
+      recordBtn.style.display='inline-block';
+      stopBtn.style.display='none';
+      isRecording=false; cleanup();
+      if(bgRafId){cancelAnimationFrame(bgRafId);bgRafId=null;}
+      if(dummyRafId){cancelAnimationFrame(dummyRafId);dummyRafId=null;}
+      camContainer.classList.remove('visible');
+    }
+  };
+
+  stopBtn.onclick=function(){stopRecording();statusEl.innerText='⏹ Stopped';};
+
+  newRecBtn.onclick=function(){
+    window.closeVideoPlayer();
+    finalDiv.style.display='none';
+    if(!origAudio.paused){origAudio.pause();origAudio.currentTime=0;}
+    accomp.pause(); accomp.currentTime=0;
+    playBtn.style.display='inline-block'; playBtn.innerText='▶ Play Original';
+    recordBtn.style.display='inline-block'; stopBtn.style.display='none';
+    statusEl.innerText='Ready 🎤';
+    chunksMixNF=[]; chunksMixWF=[]; chunksVoiceNF=[]; chunksVoiceWF=[];
+    isRecording=false;
+    [urlMixNF,urlMixWF,urlVoiceNF,urlVoiceWF].forEach(u=>{if(u)URL.revokeObjectURL(u);});
+    urlMixNF=urlMixWF=urlVoiceNF=urlVoiceWF=null;
+    camContainer.classList.remove('visible');
+    resumeAudioCtx();
+  };
+
+  /* ─── Video player ───────────────────────────────────── */
+  window.closeVideoPlayer=function(){
+    vidPlayer.pause(); vidPlayer.currentTime=0;
+    vidPlayer.style.display='none'; vidControls.style.display='none';
+    vidPlayer.src=''; finalDiv.style.display='flex';
+    if(document.fullscreenElement) document.exitFullscreen();
+  };
+  window.toggleFullscreen=function(){
+    if(!document.fullscreenElement) vidPlayer.requestFullscreen().catch(e=>console.log(e));
+    else document.exitFullscreen();
+  };
+  vidPlayer.addEventListener('click',function(){if(this.paused)this.play();else this.pause();});
+
+  /* ─── Init ───────────────────────────────────────────── */
+  window.addEventListener('load',async()=>{ await resumeAudioCtx(); statusEl.innerText='Ready 🎤 — tap buttons'; });
+  document.addEventListener('touchstart',async()=>{ await resumeAudioCtx(); },{once:true});
+  window.addEventListener('beforeunload',()=>{
+    [urlMixNF,urlMixWF,urlVoiceNF,urlVoiceWF].forEach(u=>{if(u)URL.revokeObjectURL(u);});
+    if(audioCtx) audioCtx.close();
+    if(micStream) micStream.getTracks().forEach(t=>t.stop());
+    if(camStream) camStream.getTracks().forEach(t=>t.stop());
+  });
+  window.addEventListener('pagehide',()=>{
+    [bgRafId,dummyRafId,camRafId].forEach(id=>{if(id)cancelAnimationFrame(id);});
+  });
+
+})();
+</script>
 </body>
 </html>
