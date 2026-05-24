@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>All Karaoke Songs</title>
+
+<meta name="description" content="Browse karaoke songs available on Branks3 Sing Along.">
+
+<style>
+body{
+background:#000;
+font-family:Poppins,sans-serif;
+color:white;
+padding:30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.card{
+background:#111;
+border-radius:15px;
+overflow:hidden;
+text-decoration:none;
+color:white;
+}
+
+.card img{
+width:100%;
+height:250px;
+object-fit:cover;
+}
+
+.card h3{
+padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎵 Karaoke Songs</h1>
+
+<div class="grid">
+
+{% for song in songs %}
+
+<a href="/{{ song.id }}/{{ song.name|slugify }}/" class="card">
+
+{% if song.lyrics_image %}
+<img src="{{ song.lyrics_image.url }}">
+{% endif %}
+
+<h3>{{ song.name }}</h3>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>
