@@ -20,4 +20,6 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
+
+    path('songs/', views.songs_page, name='songs_page'),
 ]
