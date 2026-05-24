@@ -3,9 +3,15 @@
 <html>
 <head>
     <title>About - Sing Along</title>
+
     <link rel="icon" type="image/png" href="{% static 'media/logo/branks3_logo.png' %}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Learn more about Sing Along karaoke platform, music experience, karaoke recording features, public songs, mobile compatibility, and future updates.">
+
     <style>
+
         body {
             font-family: 'Poppins', sans-serif;
             background: #000000;
@@ -13,64 +19,244 @@
             padding: 40px 20px;
             color: white;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: rgba(5,10,25,0.85);
+            background: rgba(5,10,25,0.90);
             border-radius: 20px;
-            padding: 30px;
+            padding: 35px;
             border: 1px solid rgba(255,255,255,0.15);
         }
+
         h1 {
             margin-top: 0;
-            font-size: 2rem;
+            font-size: 2.3rem;
+            margin-bottom: 10px;
         }
+
         h2 {
-            font-size: 1.3rem;
-            margin-top: 1.5rem;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 12px;
+            color: #ffffff;
         }
+
         p, li {
-            line-height: 1.6;
-            color: #ddd;
+            line-height: 1.9;
+            color: #dddddd;
+            font-size: 1rem;
         }
+
+        ul {
+            padding-left: 20px;
+        }
+
         a {
             color: #4285F4;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
+
         .back-link {
             display: inline-block;
-            margin-top: 30px;
-            padding: 8px 16px;
+            margin-top: 40px;
+            padding: 10px 18px;
             background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+            border-radius: 10px;
+            color: white;
+            transition: 0.2s ease;
         }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.2);
+            text-decoration: none;
+        }
+
+        .highlight-box {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .feature-list li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            p, li {
+                font-size: 0.96rem;
+            }
+        }
+
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>About Sing Along</h1>
 
-        <p>Sing Along is a karaoke-based application designed to provide a smooth singing and recording experience. Users can sing along with music tracks while recording their performance in real time.</p>
+<div class="container">
 
-        <p>This platform allows controlled access, where only authorized users created by the administrator or developer can login. Public registration is not available.</p>
+    <h1>About Sing Along</h1>
 
-        <p>The application is focused on simple karaoke playback and recording functionality without storing or processing any user data.</p>
+    <p>
+        Sing Along is a karaoke-based music platform designed for people who enjoy singing, practicing vocals, and experiencing music in an interactive and enjoyable way. The platform was created with the goal of providing a smooth karaoke experience directly through a modern web application that works across different devices and screen sizes.
+    </p>
 
-        <p><strong>Key Features:</strong></p>
-        <ul>
-            <li> Real-time karaoke recording experience</li>
-            <li> Music tracks for karaoke singing</li>
-            <li> Lyrics display for easy singing</li>
-            <li> Restricted and controlled access</li>
-            <li> No data collection or storage</li>
-        </ul>
+    <p>
+        The website allows users to explore karaoke songs, sing along with accompaniment tracks, and experience synchronized music playback in a clean and easy-to-use environment. Sing Along focuses on simplicity, accessibility, and performance so that music lovers can enjoy karaoke without needing complex software installations.
+    </p>
 
-        <p>This platform is developed to enable karaoke singing and recording functionality in a simple and secure environment.</p>
-
-        <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+    <div class="highlight-box">
+        <p>
+            Sing Along combines karaoke playback, lyrics support, song sharing, and recording functionality into one lightweight web platform designed for both desktop and mobile users.
+        </p>
     </div>
+
+    <h2>1. About Sing Along</h2>
+
+    <p>
+        Sing Along was developed as a modern karaoke web application that enables users to enjoy music in a fun and engaging way. Unlike traditional karaoke systems that require special hardware or applications, this platform is fully web-based and accessible directly through a browser.
+    </p>
+
+    <p>
+        The project is focused on delivering a smooth audio experience with user-friendly navigation and responsive design. Users can access karaoke songs, follow lyrics, and interact with music tracks with minimal effort. The application is continuously improved to enhance performance, user experience, and compatibility across devices.
+    </p>
+
+    <h2>2. What Users Can Do</h2>
+
+    <p>
+        Sing Along provides multiple features that help users enjoy karaoke and music playback efficiently. Depending on access permissions and shared content availability, users can browse available songs and interact with karaoke tracks directly through the website.
+    </p>
+
+    <ul class="feature-list">
+        <li>Browse available karaoke songs</li>
+        <li>Open and play shared karaoke tracks</li>
+        <li>View lyrics support images while singing</li>
+        <li>Practice vocals with accompaniment music</li>
+        <li>Record karaoke performances in supported environments</li>
+        <li>Access songs through mobile and desktop browsers</li>
+        <li>Enjoy a simple and distraction-free interface</li>
+    </ul>
+
+    <p>
+        The application is designed to remain lightweight while still delivering essential karaoke features for music enthusiasts and casual singers.
+    </p>
+
+    <h2>3. Karaoke Experience</h2>
+
+    <p>
+        One of the primary goals of Sing Along is to create a smooth karaoke experience with synchronized music playback and responsive controls. Karaoke tracks are organized in a simple format so users can quickly access songs and begin singing without unnecessary setup steps.
+    </p>
+
+    <p>
+        Lyrics support helps users follow songs more comfortably while accompaniment tracks provide a better singing environment. The overall interface is intentionally minimal and dark-themed to create a focused music experience that feels modern and visually comfortable during long usage sessions.
+    </p>
+
+    <p>
+        The karaoke player is optimized to reduce distractions and make song playback simple, fast, and reliable for users who want to practice singing or enjoy karaoke casually.
+    </p>
+
+    <h2>4. Song Library</h2>
+
+    <p>
+        Sing Along includes a growing collection of karaoke tracks shared through the platform. Songs may include thumbnails, lyrics images, accompaniment tracks, and organized metadata to improve browsing and playback experiences.
+    </p>
+
+    <p>
+        Publicly shared songs can be accessed directly through the website interface, allowing users to discover and enjoy karaoke content easily. The song library structure is designed to support future improvements including better categorization, search functionality, and expanded music collections.
+    </p>
+
+    <p>
+        The platform currently focuses on maintaining a clean and manageable song system while continuing to improve content availability and overall accessibility.
+    </p>
+
+    <h2>5. Audio Recording</h2>
+
+    <p>
+        Sing Along supports karaoke recording functionality for supported users and environments. This feature allows users to record their singing sessions while listening to karaoke accompaniment tracks.
+    </p>
+
+    <p>
+        The recording system is designed to work directly within the browser using modern web technologies. This approach allows users to practice vocals conveniently without needing external recording applications.
+    </p>
+
+    <p>
+        Recording functionality is continuously monitored and improved to maintain stable performance and compatibility with supported browsers and devices.
+    </p>
+
+    <h2>6. Mobile Friendly Experience</h2>
+
+    <p>
+        Mobile compatibility is an important part of the Sing Along platform. The website is designed using responsive layouts that adapt to different screen sizes including smartphones, tablets, laptops, and desktop systems.
+    </p>
+
+    <p>
+        The responsive interface helps users access karaoke songs comfortably from various devices while maintaining smooth navigation and playback controls. Buttons, layouts, typography, and spacing are optimized for mobile interaction and usability.
+    </p>
+
+    <p>
+        The platform continues to improve mobile responsiveness and browser compatibility to provide a better overall experience for all users.
+    </p>
+
+    <h2>7. Privacy & Security</h2>
+
+    <p>
+        Sing Along is developed with attention to user privacy, platform stability, and secure access management. The platform does not provide unrestricted public account creation and uses controlled access mechanisms where necessary.
+    </p>
+
+    <p>
+        Standard web security practices are used to help maintain application reliability and safe platform functionality. The system is continuously monitored and updated as new improvements and features are introduced.
+    </p>
+
+    <p>
+        Additional details regarding privacy and platform policies are available through the Privacy Policy page of the website.
+    </p>
+
+    <h2>8. Future Improvements</h2>
+
+    <p>
+        Sing Along is an actively evolving project and future updates may introduce additional features and enhancements aimed at improving the karaoke experience. Planned improvements may include expanded song libraries, improved playback systems, advanced recording options, improved search functionality, and enhanced user interaction features.
+    </p>
+
+    <p>
+        The long-term vision of the platform is to create a reliable, enjoyable, and accessible karaoke environment for music enthusiasts who enjoy singing, practicing, and interacting with karaoke content online.
+    </p>
+
+    <p>
+        Continuous improvements are made to optimize performance, accessibility, usability, and overall website quality while maintaining a simple and user-friendly experience.
+    </p>
+
+    <div class="highlight-box">
+        <p>
+            Thank you for visiting Sing Along and supporting the development of this karaoke platform. The project continues to evolve with the goal of providing a better music and karaoke experience for all users.
+        </p>
+    </div>
+
+    <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+
+</div>
+
 </body>
 </html>
