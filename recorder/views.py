@@ -237,6 +237,7 @@ def songs_page(request):
     return render(request, 'recorder/songs.html', {
         'songs': songs
     })
-
+def faq(request):
+    return render(request, 'recorder/faq.html')
 
 
