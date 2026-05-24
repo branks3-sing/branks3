@@ -15,45 +15,24 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="robots" content="index, follow">
-
-<meta property="og:title" content="Branks3 Sing Along">
-<meta property="og:description" content="Online karaoke singing and recording platform.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.branks3-sing.com/">
-
-<link rel="canonical" href="https://www.branks3-sing.com/">
-
 <link rel="icon" type="image/png" href="{% static 'media/logo/branks3_logo.png' %}">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    font-family:'Poppins',sans-serif;
+    margin:0;
+    font-family:Poppins,sans-serif;
     background:#000;
     color:white;
 }
 
 header{
-    padding:18px 25px;
+    padding:20px;
     background:#050a19;
-    border-bottom:1px solid rgba(255,255,255,0.08);
-    position:sticky;
-    top:0;
-    z-index:100;
+    border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 nav{
-    max-width:1200px;
-    margin:auto;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -61,78 +40,54 @@ nav{
     gap:15px;
 }
 
-.logo-title{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.logo-title img{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-}
-
-.logo-title h2{
-    font-size:1.3rem;
-}
-
-.nav-links{
-    display:flex;
-    flex-wrap:wrap;
-    gap:18px;
-}
-
-.nav-links a{
+nav a{
     color:white;
     text-decoration:none;
-    font-size:0.95rem;
+    margin-left:20px;
     transition:0.3s;
 }
 
-.nav-links a:hover{
+nav a:hover{
     color:#ff0066;
 }
 
 .hero{
-    padding:90px 20px;
+    padding:80px 20px;
     text-align:center;
-    background:linear-gradient(to bottom,#050a19,#000);
 }
 
 .hero h1{
-    font-size:3.2rem;
+    font-size:3rem;
     margin-bottom:20px;
 }
 
 .hero p{
-    color:#cfcfcf;
-    max-width:850px;
+    color:#ccc;
+    max-width:700px;
     margin:auto;
-    line-height:1.9;
+    line-height:1.8;
     font-size:1.05rem;
 }
 
 .hero .btn{
-    margin-top:35px;
+    margin-top:30px;
     display:inline-block;
     background:#ff0066;
     color:white;
-    padding:14px 34px;
-    border-radius:40px;
+    padding:14px 30px;
+    border-radius:30px;
     text-decoration:none;
     font-weight:600;
     transition:0.3s;
 }
 
 .hero .btn:hover{
-    transform:translateY(-2px);
-    opacity:0.9;
+    opacity:0.85;
 }
 
 .section{
-    padding:70px 20px;
-    max-width:1200px;
+    padding:60px 20px;
+    max-width:1100px;
     margin:auto;
 }
 
@@ -144,116 +99,104 @@ nav{
 .features{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:22px;
+    gap:20px;
 }
 
 .card{
     background:#111827;
-    padding:28px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.1);
     transition:0.3s;
 }
 
 .card:hover{
     transform:translateY(-5px);
+    border-color:rgba(255,255,255,0.3);
 }
 
 .card h3{
-    margin-bottom:14px;
+    margin-bottom:10px;
 }
 
 .card p{
-    color:#cfcfcf;
-    line-height:1.8;
+    color:#ccc;
+    line-height:1.7;
 }
 
 .songs-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:22px;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:20px;
 }
 
 .song-card{
     background:#111;
-    border-radius:18px;
+    border-radius:15px;
     overflow:hidden;
     text-decoration:none;
     color:white;
-    transition:0.3s;
     border:1px solid rgba(255,255,255,0.08);
+    transition:0.3s;
 }
 
 .song-card:hover{
     transform:translateY(-5px);
+    border-color:rgba(255,255,255,0.25);
 }
 
 .song-card img{
     width:100%;
-    height:240px;
+    height:220px;
     object-fit:cover;
 }
 
 .song-card h3{
-    padding:16px;
-    font-size:1rem;
-}
-
-.about-text{
-    line-height:2;
-    color:#d0d0d0;
+    padding:15px;
     font-size:1rem;
 }
 
 footer{
     margin-top:50px;
-    padding:40px 20px;
+    padding:30px;
     text-align:center;
     background:#050a19;
-    border-top:1px solid rgba(255,255,255,0.08);
+    border-top:1px solid rgba(255,255,255,0.1);
 }
 
 footer p{
-    margin-bottom:15px;
     color:#aaa;
 }
 
-.footer-links{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:18px;
-}
-
-.footer-links a{
+footer a{
     color:#aaa;
+    margin:0 10px;
     text-decoration:none;
-    transition:0.3s;
 }
 
-.footer-links a:hover{
+footer a:hover{
     color:white;
 }
 
 @media(max-width:768px){
 
-.hero h1{
-    font-size:2.2rem;
-}
+    .hero h1{
+        font-size:2rem;
+    }
 
-.hero p{
-    font-size:0.95rem;
-}
+    nav{
+        flex-direction:column;
+        align-items:flex-start;
+    }
 
-nav{
-    flex-direction:column;
-    align-items:flex-start;
-}
+    nav a{
+        margin-left:0;
+        margin-right:15px;
+    }
 
-.nav-links{
-    gap:12px;
-}
-
+    .hero{
+        padding:60px 20px;
+    }
 }
 
 </style>
@@ -265,22 +208,16 @@ nav{
 
 <nav>
 
-<div class="logo-title">
-
-<img src="{% static 'media/logo/branks3_logo.png' %}" alt="Logo">
-
+<div>
 <h2>🎤 Branks3 Sing Along</h2>
-
 </div>
 
-<div class="nav-links">
+<div>
 <a href="/">Home</a>
 <a href="/songs/">Songs</a>
 <a href="/about/">About</a>
 <a href="/faq/">FAQ</a>
 <a href="/contact/">Contact</a>
-<a href="/privacy-policy/">Privacy</a>
-<a href="/terms/">Terms</a>
 <a href="/login/">Login</a>
 </div>
 
@@ -290,47 +227,47 @@ nav{
 
 <section class="hero">
 
-<h1>Online Karaoke Singing & Recording Platform</h1>
+<h1>Online Karaoke Singing Platform</h1>
 
 <p>
-Branks3 Sing Along is an online karaoke singing platform designed for music lovers who enjoy singing with karaoke accompaniment tracks directly from their browser. Users can explore karaoke songs, practice singing, record performances, and enjoy a smooth karaoke experience on mobile phones, tablets, and desktop devices without installing additional applications.
+Branks3 Sing Along is an online karaoke singing platform where users can sing songs with accompaniment music, record their voice and video, and enjoy karaoke directly from mobile or desktop devices.
 </p>
 
-<a href="/songs/" class="btn">Explore Karaoke Songs</a>
+<a href="/songs/" class="btn">Explore Songs</a>
 
 </section>
 
 <section class="section">
 
-<h2>✨ Platform Features</h2>
+<h2>✨ Features</h2>
 
 <div class="features">
 
 <div class="card">
 <h3>🎤 Karaoke Singing</h3>
 <p>
-Sing along with accompaniment music tracks and enjoy synchronized karaoke experiences with lyric visuals and smooth playback support.
+Sing along with karaoke accompaniment tracks and synchronized lyric backgrounds for an immersive singing experience.
 </p>
 </div>
 
 <div class="card">
-<h3>📹 Browser Recording</h3>
+<h3>📹 Video Recording</h3>
 <p>
-Record your singing performances directly inside the browser using built-in microphone and camera access without external software.
+Record your singing performance with live front camera support directly inside your browser.
 </p>
 </div>
 
 <div class="card">
-<h3>🎧 Audio Experience</h3>
+<h3>🎧 Audio Mixing</h3>
 <p>
-Experience high-quality karaoke playback with voice and music synchronization optimized for modern browsers and devices.
+Automatically combine karaoke music and microphone voice using browser-based audio processing.
 </p>
 </div>
 
 <div class="card">
 <h3>📱 Mobile Friendly</h3>
 <p>
-The karaoke platform is fully optimized for Android, iPhone, tablets, laptops, and desktop screens for smooth usability everywhere.
+Optimized for Android, iPhone, tablets, laptops, and desktop devices with responsive design.
 </p>
 </div>
 
@@ -351,7 +288,7 @@ The karaoke platform is fully optimized for Android, iPhone, tablets, laptops, a
 {% if song.lyrics_image %}
 <img src="{{ song.lyrics_image.url }}" alt="{{ song.name }}">
 {% else %}
-<img src="/static/default_lyrics_bg.jpg" alt="Karaoke Song">
+<img src="/static/default_lyrics_bg.jpg" alt="Default Song Image">
 {% endif %}
 
 <h3>{{ song.name }}</h3>
@@ -368,24 +305,23 @@ The karaoke platform is fully optimized for Android, iPhone, tablets, laptops, a
 
 <h2>📖 About Branks3 Sing Along</h2>
 
-<p class="about-text">
-Branks3 Sing Along was created to provide a modern karaoke singing and recording experience directly through web browsers. The platform allows users to sing karaoke songs online using accompaniment tracks while practicing vocals and enjoying music entertainment from anywhere. The website focuses on simplicity, responsive design, smooth playback, and an enjoyable user experience across different devices and screen sizes.
-<br><br>
-The platform supports public karaoke song previews, recording functionality, music accessibility, and mobile compatibility while continuously improving features and overall user experience for karaoke enthusiasts and music lovers worldwide.
+<p style="line-height:1.9;color:#ccc;">
+Branks3 Sing Along was developed to provide a smooth karaoke recording experience directly from modern web browsers. Users can enjoy singing with karaoke tracks, record their voice, create singing videos, and practice music online without installing large applications. The platform focuses on delivering a clean and enjoyable singing experience for music lovers who want karaoke functionality directly from their devices.
 </p>
 
 </section>
 
 <footer>
 
-<p>© 2026 Branks3 Sing Along. All Rights Reserved.</p>
+<p>© 2026 Branks3 Sing Along</p>
 
-<div class="footer-links">
+<div style="margin-top:15px;">
+
 <a href="/privacy-policy/">Privacy Policy</a>
-<a href="/terms/">Terms & Conditions</a>
+<a href="/terms/">Terms</a>
 <a href="/about/">About</a>
-<a href="/faq/">FAQ</a>
 <a href="/contact/">Contact</a>
+
 </div>
 
 </footer>
