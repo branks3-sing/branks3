@@ -240,4 +240,8 @@ def songs_page(request):
 def faq(request):
     return render(request, 'recorder/faq.html')
 
+def terms(request):
+    return render(request, 'recorder/terms.html')
+
+
 
