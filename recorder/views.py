@@ -230,3 +230,13 @@ def contact(request):
 
 def about(request):
     return render(request, 'recorder/about.html')
+
+
+def songs_page(request):
+    songs = Song.objects.filter(is_shared=True)
+    return render(request, 'recorder/songs.html', {
+        'songs': songs
+    })
+
+
+
