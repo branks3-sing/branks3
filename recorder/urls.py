@@ -42,4 +42,5 @@ urlpatterns = [
             content_type="application/xml"
         ),
     ),
+    path('google727bc10ed02ce07b', views.google_verification),
 ]
