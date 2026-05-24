@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('ads.txt', views.ads_txt),
@@ -24,4 +25,13 @@ urlpatterns = [
     path('songs/', views.songs_page, name='songs_page'),
     path('faq/', views.faq, name='faq'),
     path('terms/', views.terms, name='terms'),
+
+
+    path(
+        "robots.txt",
+        TemplateView.as_view(
+            template_name="robots.txt",
+            content_type="text/plain"
+        ),
+    ),
 ]
