@@ -248,5 +248,5 @@ def terms(request):
     return render(request, 'recorder/terms.html')
 
 def google_verification(request):
-    return redirect('/static/googlea1b2c3d4e5.html')
+    return redirect('/static/google727bc10ed02ce07b')
 
