@@ -23,4 +23,5 @@ urlpatterns = [
 
     path('songs/', views.songs_page, name='songs_page'),
     path('faq/', views.faq, name='faq'),
+    path('terms/', views.terms, name='terms'),
 ]
