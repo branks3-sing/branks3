@@ -10,6 +10,10 @@ from django.conf import settings
 from .models import Song, UserProfile, Recording
 from django.http import HttpResponse
 
+from django.views.generic import TemplateView
+from django.templatetags.static import static
+from django.shortcuts import redirect
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -243,5 +247,6 @@ def faq(request):
 def terms(request):
     return render(request, 'recorder/terms.html')
 
-
+def google_verification(request):
+    return redirect('/static/googlea1b2c3d4e5.html')
 
